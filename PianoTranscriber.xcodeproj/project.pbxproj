@@ -14,6 +14,9 @@
 		7414BDCF2BF50755003E242C /* PianoTranscriberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7414BDCE2BF50755003E242C /* PianoTranscriberTests.swift */; };
 		7414BDD92BF50755003E242C /* PianoTranscriberUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7414BDD82BF50755003E242C /* PianoTranscriberUITests.swift */; };
 		7414BDDB2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7414BDDA2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift */; };
+		746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820B72BF5097D00CB4015 /* ModelManager.swift */; };
+		746820BD2BF61F5400CB4015 /* audio_to_midi_v1.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 746820BC2BF61F5400CB4015 /* audio_to_midi_v1.tflite */; };
+		F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03134EB649542C1BDCFAB008 /* Pods-PianoTranscriber.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.debug.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.debug.xcconfig"; sourceTree = "<group>"; };
+		6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PianoTranscriber.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7414BDBA2BF50753003E242C /* PianoTranscriber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PianoTranscriber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7414BDBD2BF50753003E242C /* PianoTranscriberApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoTranscriberApp.swift; sourceTree = "<group>"; };
 		7414BDBF2BF50753003E242C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -44,6 +49,9 @@
 		7414BDD42BF50755003E242C /* PianoTranscriberUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PianoTranscriberUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7414BDD82BF50755003E242C /* PianoTranscriberUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoTranscriberUITests.swift; sourceTree = "<group>"; };
 		7414BDDA2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoTranscriberUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		746820B72BF5097D00CB4015 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
+		746820BC2BF61F5400CB4015 /* audio_to_midi_v1.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; path = audio_to_midi_v1.tflite; sourceTree = "<group>"; };
+		A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.release.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +80,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		59B1A52DAA142E8884E43E70 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				03134EB649542C1BDCFAB008 /* Pods-PianoTranscriber.debug.xcconfig */,
+				A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		7414BDB12BF50753003E242C = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +96,8 @@
 				7414BDCD2BF50755003E242C /* PianoTranscriberTests */,
 				7414BDD72BF50755003E242C /* PianoTranscriberUITests */,
 				7414BDBB2BF50753003E242C /* Products */,
+				59B1A52DAA142E8884E43E70 /* Pods */,
+				A794B1AB51607FFF5D7EA15B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,10 +114,12 @@
 		7414BDBC2BF50753003E242C /* PianoTranscriber */ = {
 			isa = PBXGroup;
 			children = (
+				746820BB2BF61F2500CB4015 /* Resources */,
 				7414BDBD2BF50753003E242C /* PianoTranscriberApp.swift */,
 				7414BDBF2BF50753003E242C /* ContentView.swift */,
 				7414BDC12BF50755003E242C /* Assets.xcassets */,
 				7414BDC32BF50755003E242C /* Preview Content */,
+				746820B72BF5097D00CB4015 /* ModelManager.swift */,
 			);
 			path = PianoTranscriber;
 			sourceTree = "<group>";
@@ -127,6 +149,22 @@
 			path = PianoTranscriberUITests;
 			sourceTree = "<group>";
 		};
+		746820BB2BF61F2500CB4015 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				746820BC2BF61F5400CB4015 /* audio_to_midi_v1.tflite */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A794B1AB51607FFF5D7EA15B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -134,6 +172,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7414BDDE2BF50755003E242C /* Build configuration list for PBXNativeTarget "PianoTranscriber" */;
 			buildPhases = (
+				979F2CF2908F713707AD3D31 /* [CP] Check Pods Manifest.lock */,
 				7414BDB62BF50753003E242C /* Sources */,
 				7414BDB72BF50753003E242C /* Frameworks */,
 				7414BDB82BF50753003E242C /* Resources */,
@@ -231,6 +270,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				746820BD2BF61F5400CB4015 /* audio_to_midi_v1.tflite in Resources */,
 				7414BDC52BF50755003E242C /* Preview Assets.xcassets in Resources */,
 				7414BDC22BF50755003E242C /* Assets.xcassets in Resources */,
 			);
@@ -252,6 +292,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		979F2CF2908F713707AD3D31 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PianoTranscriber-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		7414BDB62BF50753003E242C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -259,6 +324,7 @@
 			files = (
 				7414BDC02BF50753003E242C /* ContentView.swift in Sources */,
 				7414BDBE2BF50753003E242C /* PianoTranscriberApp.swift in Sources */,
+				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +482,7 @@
 		};
 		7414BDDF2BF50755003E242C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 03134EB649542C1BDCFAB008 /* Pods-PianoTranscriber.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -445,6 +512,7 @@
 		};
 		7414BDE02BF50755003E242C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -1,0 +1,89 @@
+# User-specific files
+*.swp
+*.swo
+*.DS_Store
+
+# Xcode
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+/.build/
+# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+# Packages/
+# Add this line if you want to avoid checking in Xcode scheme settings from SPM
+# .swiftpm/xcode/package.xcworkspace/
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Accio dependency manager
+Dependencies/
+Accio/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+# Bundle stuff
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Injection
+# This is used to inject code into iOS devices after launch
+ci/
+
+# AppCode
+.idea/
+
+# Vim
+*.swp
+*.lock
+
+# Temporary
+*.temp
+*.tmp
+
+# SwiftPM
+/.build/
+.swiftpm/xcode/package.resolved
+
+# Output of the Swift compiler
+*.o
+*.swiftmodule
+*.swiftdoc
+*.swiftsourceinfo
+.build/
+
+# TF Lite model files
+*.tflite filter=lfs diff=lfs merge=lfs -text
+
+# macOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Backup files
+._*
+.fseventsd
+
