@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var modelManager = ModelManager(
-        modelName: "audio_to_midi_v1.tflite",
+        modelName: "audio_to_midi_v1",
         batchSize: 4)
     
     @State private var resultText: String = "Calling model..."

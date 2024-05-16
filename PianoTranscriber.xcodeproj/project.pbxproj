@@ -16,6 +16,7 @@
 		7414BDDB2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7414BDDA2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift */; };
 		746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820B72BF5097D00CB4015 /* ModelManager.swift */; };
 		746820BD2BF61F5400CB4015 /* audio_to_midi_v1.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 746820BC2BF61F5400CB4015 /* audio_to_midi_v1.tflite */; };
+		746820C12BF647C600CB4015 /* ModelUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820C02BF647C600CB4015 /* ModelUtils.swift */; };
 		F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,8 @@
 		7414BDDA2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoTranscriberUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		746820B72BF5097D00CB4015 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		746820BC2BF61F5400CB4015 /* audio_to_midi_v1.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; path = audio_to_midi_v1.tflite; sourceTree = "<group>"; };
+		746820C02BF647C600CB4015 /* ModelUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelUtils.swift; sourceTree = "<group>"; };
+		746820D92BF67DD800CB4015 /* PianoTranscriber-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PianoTranscriber-Bridging-Header.h"; sourceTree = "<group>"; };
 		A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.release.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -120,6 +123,8 @@
 				7414BDC12BF50755003E242C /* Assets.xcassets */,
 				7414BDC32BF50755003E242C /* Preview Content */,
 				746820B72BF5097D00CB4015 /* ModelManager.swift */,
+				746820D92BF67DD800CB4015 /* PianoTranscriber-Bridging-Header.h */,
+				746820C02BF647C600CB4015 /* ModelUtils.swift */,
 			);
 			path = PianoTranscriber;
 			sourceTree = "<group>";
@@ -176,6 +181,7 @@
 				7414BDB62BF50753003E242C /* Sources */,
 				7414BDB72BF50753003E242C /* Frameworks */,
 				7414BDB82BF50753003E242C /* Resources */,
+				087D8F3B36BB312EF75C38D6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -234,6 +240,7 @@
 				TargetAttributes = {
 					7414BDB92BF50753003E242C = {
 						CreatedOnToolsVersion = 15.3;
+						LastSwiftMigration = 1530;
 					};
 					7414BDC92BF50755003E242C = {
 						CreatedOnToolsVersion = 15.3;
@@ -293,6 +300,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		087D8F3B36BB312EF75C38D6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		979F2CF2908F713707AD3D31 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -323,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7414BDC02BF50753003E242C /* ContentView.swift in Sources */,
+				746820C12BF647C600CB4015 /* ModelUtils.swift in Sources */,
 				7414BDBE2BF50753003E242C /* PianoTranscriberApp.swift in Sources */,
 				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
 			);
@@ -398,7 +423,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -461,7 +486,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -486,6 +511,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"PianoTranscriber/Preview Content\"";
@@ -501,10 +527,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.knielsen.PianoTranscriber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "PianoTranscriber/PianoTranscriber-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -516,11 +548,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"PianoTranscriber/Preview Content\"";
 				DEVELOPMENT_TEAM = CTUVWBX944;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -531,10 +565,15 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.knielsen.PianoTranscriber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "PianoTranscriber/PianoTranscriber-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

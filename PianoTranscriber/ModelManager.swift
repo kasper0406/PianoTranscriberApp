@@ -33,9 +33,12 @@ class ModelManager: ObservableObject {
               delegate = MetalDelegate()
             }
 
+            print("Creating interpreter")
             let interpreter = try Interpreter(modelPath: modelPath, delegates: [delegate!])
+            print("Resizing input")
             // Set the batch size of the interpreter
             try interpreter.resizeInput(at: 0, to: Tensor.Shape([batchSize, channels, numFrames, frameSize]))
+            print("Allocating tensors")
             try interpreter.allocateTensors()
         } catch {
             print("Failed to create interpreter with error: \(error.localizedDescription)")
@@ -49,6 +52,12 @@ class ModelManager: ObservableObject {
             try interpreter?.invoke()
             
             // TODO: Copy the output
+            var outputData = try interpreter?.output(at: 0).data
+            let events = outputData?.withUnsafeMutableBytes { (bytes: UnsafeMutableRawBufferPointer) in
+                let floatPointer = bytes.baseAddress!.assumingMemoryBound(to: Float32.self)
+                extract_events(modelOutput: floatPointer)
+            }
+            
             return "Model invocation was successful ^^"
         } catch {
             print("Failed to call model!")
