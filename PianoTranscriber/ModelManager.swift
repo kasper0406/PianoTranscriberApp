@@ -6,71 +6,53 @@
 //
 
 import Foundation
-import TensorFlowLite
+import CoreML
 
 class ModelManager: ObservableObject {
-    private var interpreter: Interpreter?
+    private var model: audio2midi?
 
-    private let batchSize: Int
     private let channels = 2
     private let numFrames = 197
     private let frameSize = 2048
     
-    init(modelName: String, batchSize: Int) {
-        self.batchSize = batchSize
-        loadModel(modelName: modelName)
-    }
-
-    private func loadModel(modelName: String) {
-        guard let modelPath = Bundle.main.path(forResource: modelName, ofType: "tflite") else {
-            print("Failed to load model file.")
-            return
-        }
-
+    init() {
         do {
-            var delegate: Delegate? = CoreMLDelegate()
-            if delegate == nil {
-              delegate = MetalDelegate()
-            }
-
-            print("Creating interpreter")
-            let interpreter = try Interpreter(modelPath: modelPath, delegates: [delegate!])
-            print("Resizing input")
-            // Set the batch size of the interpreter
-            try interpreter.resizeInput(at: 0, to: Tensor.Shape([batchSize, channels, numFrames, frameSize]))
-            print("Allocating tensors")
-            try interpreter.allocateTensors()
+            model = try audio2midi()
         } catch {
-            print("Failed to create interpreter with error: \(error.localizedDescription)")
+            print("Failed to load model!")
         }
     }
 
-    func runModel(inputData: Data) -> String? {
-        // Todo...
+    func runModel() -> String? {
         do {
-            try interpreter?.copy(inputData, toInputAt: 0)
-            try interpreter?.invoke()
+            let input = try zeroInput()
+            let output = try model?.prediction(input: input)
             
-            // TODO: Copy the output
-            var outputData = try interpreter?.output(at: 0).data
-            let events = outputData?.withUnsafeMutableBytes { (bytes: UnsafeMutableRawBufferPointer) in
-                let floatPointer = bytes.baseAddress!.assumingMemoryBound(to: Float32.self)
-                extract_events(modelOutput: floatPointer)
-            }
+            let logits = output!.Identity
+            let probs = output!.Identity_1
             
-            return "Model invocation was successful ^^"
+            let events = extractEvents(modelOutput: probs)
+            
+            return "Successfully called the model ^^\nPredicted \(events.count) events"
         } catch {
-            print("Failed to call model!")
-            return nil
+            return "Failed to call the model!"
         }
     }
-    
-    func zeroInput() -> Data {
-        var zeros: [Float] = Array(repeating: 0.0, count: batchSize * channels * numFrames * frameSize)
-        let data = zeros.withUnsafeBufferPointer { buffer in
-            return Data(buffer: buffer)
-        }
-        return data;
+
+    func zeroInput() throws -> audio2midiInput {
+        let data = try MLMultiArray(
+            shape: [1, channels as NSNumber, numFrames as NSNumber, frameSize as NSNumber],
+            dataType: MLMultiArrayDataType.float16)
+
+        data.withUnsafeMutableBytes({ rawPtr, _strides in
+            let floatPtr = rawPtr.bindMemory(to: Float16.self)
+            for i in 0..<data.count {
+                floatPtr[i] = 0.0
+            }
+        })
+
+        let input = audio2midiInput(data: data)
+        return input
     }
     
 }

@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var modelManager = ModelManager(
-        modelName: "audio_to_midi_v1",
-        batchSize: 4)
+    @StateObject private var modelManager = ModelManager()
     
     @State private var resultText: String = "Calling model..."
     
@@ -19,8 +17,7 @@ struct ContentView: View {
             Text(resultText)
                 .padding()
                 .onAppear {
-                    let modelInput = modelManager.zeroInput()
-                    if let result = modelManager.runModel(inputData: modelInput) {
+                    if let result = modelManager.runModel() {
                         resultText = result
                     } else {
                         resultText = "Failed to call the model :("

@@ -7,16 +7,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4895995E-3606-401A-9D66-E78817E2EDE2"
+            uuid = "4ED49385-9645-4FF7-A768-40ED7D1B162C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/TensorFlowLiteSwift/tensorflow/lite/swift/Sources/Interpreter.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
+            landmarkName = "init(model:options:delegates:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "76C03EDF-C8F0-4D0A-8CA9-97F1048098A7"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PianoTranscriber/ModelManager.swift"
+            filePath = "Pods/TensorFlowLiteSwift/tensorflow/lite/swift/Sources/Interpreter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "loadModel(modelName:)"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
+            landmarkName = "init(model:options:delegates:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
