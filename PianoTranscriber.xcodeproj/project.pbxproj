@@ -17,6 +17,7 @@
 		746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820B72BF5097D00CB4015 /* ModelManager.swift */; };
 		746820C12BF647C600CB4015 /* ModelUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820C02BF647C600CB4015 /* ModelUtils.swift */; };
 		746820DF2BFCA79D00CB4015 /* audio2midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 746820DE2BFCA79D00CB4015 /* audio2midi.mlpackage */; };
+		746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820E02BFCE79600CB4015 /* AudioFilePicker.swift */; };
 		F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,7 @@
 		746820C02BF647C600CB4015 /* ModelUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelUtils.swift; sourceTree = "<group>"; };
 		746820D92BF67DD800CB4015 /* PianoTranscriber-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PianoTranscriber-Bridging-Header.h"; sourceTree = "<group>"; };
 		746820DE2BFCA79D00CB4015 /* audio2midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = audio2midi.mlpackage; sourceTree = "<group>"; };
+		746820E02BFCE79600CB4015 /* AudioFilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilePicker.swift; sourceTree = "<group>"; };
 		A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.release.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -125,6 +127,7 @@
 				746820B72BF5097D00CB4015 /* ModelManager.swift */,
 				746820D92BF67DD800CB4015 /* PianoTranscriber-Bridging-Header.h */,
 				746820C02BF647C600CB4015 /* ModelUtils.swift */,
+				746820E02BFCE79600CB4015 /* AudioFilePicker.swift */,
 			);
 			path = PianoTranscriber;
 			sourceTree = "<group>";
@@ -181,7 +184,6 @@
 				7414BDB62BF50753003E242C /* Sources */,
 				7414BDB72BF50753003E242C /* Frameworks */,
 				7414BDB82BF50753003E242C /* Resources */,
-				087D8F3B36BB312EF75C38D6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -299,23 +301,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		087D8F3B36BB312EF75C38D6 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		979F2CF2908F713707AD3D31 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -349,6 +334,7 @@
 				746820DF2BFCA79D00CB4015 /* audio2midi.mlpackage in Sources */,
 				746820C12BF647C600CB4015 /* ModelUtils.swift in Sources */,
 				7414BDBE2BF50753003E242C /* PianoTranscriberApp.swift in Sources */,
+				746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */,
 				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -532,7 +518,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.knielsen.PianoTranscriber;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kappertech.PianoTranscriber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "PianoTranscriber/PianoTranscriber-Bridging-Header.h";
@@ -570,7 +556,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.knielsen.PianoTranscriber;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kappertech.PianoTranscriber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "PianoTranscriber/PianoTranscriber-Bridging-Header.h";

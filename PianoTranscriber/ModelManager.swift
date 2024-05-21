@@ -7,6 +7,12 @@
 
 import Foundation
 import CoreML
+import AVFoundation
+
+enum Audio2MidiModelErrors: Error {
+    case audioFormatTooManyChannels
+    case resamplingFailed
+}
 
 class ModelManager: ObservableObject {
     private var model: audio2midi?
@@ -14,6 +20,9 @@ class ModelManager: ObservableObject {
     private let channels = 2
     private let numFrames = 197
     private let frameSize = 2048
+    private let sampleRate = 8000.0
+    
+    private let audioEngine = AVAudioEngine()
     
     init() {
         do {
@@ -23,8 +32,9 @@ class ModelManager: ObservableObject {
         }
     }
 
-    func runModel() -> String? {
+    func runModel(_ audioFileUrl: URL) -> String? {
         do {
+            let (leftSamples, rightSamples) = try extractSamples(audioFileUrl)
             let input = try zeroInput()
             let output = try model?.prediction(input: input)
             
@@ -37,6 +47,56 @@ class ModelManager: ObservableObject {
         } catch {
             return "Failed to call the model!"
         }
+    }
+    
+    private func extractSamples(_ audioFileUrl: URL) throws -> ([Float], [Float]) {
+        let audioFile = try AVAudioFile(forReading: audioFileUrl)
+        let audioFormat = audioFile.processingFormat
+        if audioFormat.channelCount > 2 {
+            throw Audio2MidiModelErrors.audioFormatTooManyChannels
+        }
+        
+        let outputAudioFormat = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: audioFormat.channelCount)!
+        let converter = AVAudioConverter(
+            from: audioFormat,
+            to: outputAudioFormat
+        )!
+        
+        let inputBuffer = AVAudioPCMBuffer(pcmFormat: audioFile.processingFormat, frameCapacity: AVAudioFrameCount(audioFile.length))!
+        try audioFile.read(into: inputBuffer)
+
+        let outputBuffer = AVAudioPCMBuffer(pcmFormat: converter.outputFormat, frameCapacity: inputBuffer.frameLength)!
+        var errorPtr: NSErrorPointer = nil;
+        var dataProvided = false
+        converter.convert(to: outputBuffer, error: errorPtr, withInputFrom: { inNumPackets, outStatus in
+            if dataProvided {
+                outStatus.pointee = .endOfStream
+                return nil
+            } else {
+                dataProvided = true
+                outStatus.pointee = .haveData
+                return inputBuffer
+            }
+        })
+        if errorPtr != nil {
+            throw Audio2MidiModelErrors.resamplingFailed
+        }
+
+        let outputFrames = outputBuffer.frameLength
+        let leftChannel = Array(UnsafeBufferPointer(
+            start: outputBuffer.floatChannelData?.advanced(by: 0).pointee,
+            count: Int(outputBuffer.frameLength))
+        )
+        
+        var rightChannel = leftChannel
+        if audioFormat.channelCount == 2 {
+            rightChannel = Array(UnsafeBufferPointer(
+                start: outputBuffer.floatChannelData?.advanced(by: 1).pointee,
+                count: Int(outputBuffer.frameLength))
+            )
+        }
+        
+        return (leftChannel, rightChannel)
     }
 
     func zeroInput() throws -> audio2midiInput {
