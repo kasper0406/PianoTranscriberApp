@@ -16,8 +16,8 @@ struct MidiEvent {
 }
 
 func extractEvents(modelOutput: MLMultiArray) -> [MidiEvent] {
-    let numFrames = modelOutput.shape[1]
-    let numNotes = modelOutput.shape[2]
+    let numFrames = modelOutput.shape[0]
+    let numNotes = modelOutput.shape[1]
     
     print("Calling rust!")
     let rawEvents = modelOutput.withUnsafeBytes({ rawPtr in

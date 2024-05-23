@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "ModelManager.loadModel(modelName:):ModelManager.swift">
+      </ContextState>
+      <ContextState
+         contextName = "closure #2 in closure #2 in ModelManager.prepareSamples(_:):ModelManager.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "(origPtr.baseAddress?.advanced(by: i).pointee)!">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ModelManager.runModel(_:):ModelManager.swift">
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in ModelManager.prepareSamples(_:):ModelManager.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "leftSamples[240000 + i]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "Audio2Midi.prediction(input:options:):Audio2Midi.swift">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

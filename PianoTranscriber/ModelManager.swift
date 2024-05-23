@@ -14,19 +14,38 @@ enum Audio2MidiModelErrors: Error {
     case resamplingFailed
 }
 
-class ModelManager: ObservableObject {
-    private var model: audio2midi?
+private struct PreparedFrames {
+    let frames: [Audio2MidiInput]
+    let durationPerFrame: Double
+    let frameWidth: Double
+}
 
+class ModelManager: ObservableObject {
+    private var model: Audio2Midi?
+    private var samplePrep: Audio2MidiSamplePrepare?
+
+    // TODO(knielsen): Export these constants in the CoreML model metadata
     private let channels = 2
     private let numFrames = 197
     private let frameSize = 2048
-    private let sampleRate = 8000.0
+    private let sampleRate = 8000.0 // Hz
+    private let windowDuration = 3.0 // seconds
+    private let windowOverlap = 0.5 // seconds
     
     private let audioEngine = AVAudioEngine()
     
     init() {
         do {
-            model = try audio2midi()
+            let inferenceConfig = MLModelConfiguration()
+            inferenceConfig.computeUnits = .cpuOnly
+            model = try Audio2Midi(configuration: inferenceConfig)
+            
+            // The sample prep model does not currently support running on any accelerated hardware
+            // For now just compute things on the CPU
+            // Otherwise it errors on the iPhone and returns all 0's in the simulator
+            let samplePrepConfig = MLModelConfiguration()
+            samplePrepConfig.computeUnits = .cpuOnly
+            samplePrep = try Audio2MidiSamplePrepare(configuration: samplePrepConfig)
         } catch {
             print("Failed to load model!")
         }
@@ -34,14 +53,11 @@ class ModelManager: ObservableObject {
 
     func runModel(_ audioFileUrl: URL) -> String? {
         do {
-            let (leftSamples, rightSamples) = try extractSamples(audioFileUrl)
-            let input = try zeroInput()
-            let output = try model?.prediction(input: input)
-            
-            let logits = output!.Identity
-            let probs = output!.Identity_1
-            
-            let events = extractEvents(modelOutput: probs)
+            let inputs = try prepareSamples(audioFileUrl)
+            let outputs = try model!.predictions(inputs: inputs.frames)
+
+            let middleProbs = outputs[outputs.count / 2].probs
+            let events = extractEvents(modelOutput: middleProbs)
             
             return "Successfully called the model ^^\nPredicted \(events.count) events"
         } catch {
@@ -49,7 +65,45 @@ class ModelManager: ObservableObject {
         }
     }
     
+    private func prepareSamples(_ audioFileUrl: URL) throws -> PreparedFrames {
+        let samplesInWindow = Int(sampleRate * windowDuration)
+        let overlap = Int(sampleRate * windowOverlap)
+        let (leftSamples, rightSamples) = try extractSamples(audioFileUrl)
+
+        let numWindows = Int(ceil(Double(leftSamples.count) / Double(samplesInWindow - overlap)))
+        var windows: [Audio2MidiSamplePrepareInput] = []
+        for i in 0 ..< numWindows {
+            let sampleInputs = Audio2MidiSamplePrepareInput(
+                samples: try MLMultiArray(shape: [2, samplesInWindow] as [NSNumber], dataType: .float16)
+            )
+            
+            let windowStart = i * (samplesInWindow - overlap)
+            let windowEnd = windowStart + samplesInWindow
+            for (windowIdx, sampleIdx) in zip(0...samplesInWindow, windowStart..<windowEnd) {
+                let leftSample = if sampleIdx < leftSamples.count { leftSamples[sampleIdx] } else { Float(0.0) }
+                sampleInputs.samples[[0, windowIdx] as [NSNumber]] = NSNumber(value: leftSample)
+
+                let rightSample = if sampleIdx < rightSamples.count { rightSamples[sampleIdx] } else { Float(0.0) }
+                sampleInputs.samples[[1, windowIdx] as [NSNumber]] = NSNumber(value: rightSample)
+            }
+            windows.append(sampleInputs)
+        }
+        
+        let outputs = try samplePrep!.predictions(inputs: windows)
+        
+        let durationPerFrame = outputs.first!.duration_per_frame[0]
+        let frameWidth = outputs.first!.frame_width[0]
+        let frames = outputs.map({ output in Audio2MidiInput(data: output.frames) })
+
+        return PreparedFrames(
+            frames: frames,
+            durationPerFrame: durationPerFrame.doubleValue,
+            frameWidth: frameWidth.doubleValue
+        )
+    }
+    
     private func extractSamples(_ audioFileUrl: URL) throws -> ([Float], [Float]) {
+        audioFileUrl.startAccessingSecurityScopedResource()
         let audioFile = try AVAudioFile(forReading: audioFileUrl)
         let audioFormat = audioFile.processingFormat
         if audioFormat.channelCount > 2 {
@@ -96,23 +150,8 @@ class ModelManager: ObservableObject {
             )
         }
         
+        audioFileUrl.stopAccessingSecurityScopedResource()
         return (leftChannel, rightChannel)
-    }
-
-    func zeroInput() throws -> audio2midiInput {
-        let data = try MLMultiArray(
-            shape: [1, channels as NSNumber, numFrames as NSNumber, frameSize as NSNumber],
-            dataType: MLMultiArrayDataType.float16)
-
-        data.withUnsafeMutableBytes({ rawPtr, _strides in
-            let floatPtr = rawPtr.bindMemory(to: Float16.self)
-            for i in 0..<data.count {
-                floatPtr[i] = 0.0
-            }
-        })
-
-        let input = audio2midiInput(data: data)
-        return input
     }
     
 }
