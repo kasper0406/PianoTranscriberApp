@@ -16,18 +16,17 @@ struct MidiEvent {
 }
 
 func extractEvents(modelOutput: MLMultiArray) -> [MidiEvent] {
-    let numFrames = modelOutput.shape[0]
-    let numNotes = modelOutput.shape[1]
-    
-    print("Calling rust!")
+    let numFrames = modelOutput.shape[0].int32Value
+    let numNotes = modelOutput.shape[1].int32Value
+    let frameStride = modelOutput.strides[0].int32Value
+    let noteStride = modelOutput.strides[1].int32Value
+
     let rawEvents = modelOutput.withUnsafeBytes({ rawPtr in
         let ptr = rawPtr.baseAddress?.assumingMemoryBound(to: UInt8.self)
-        return extract_midi_events(numFrames.int32Value, numNotes.int32Value, ptr)
+        return extract_midi_events(numFrames, frameStride, numNotes, noteStride, ptr)
     })
 
     var events: [MidiEvent] = []
-    
-    print("Got a pointer from rust: \(String(describing: rawEvents))")
     for i in 0..<rawEvents!.pointee.length {
         let rawEvent = rawEvents!.pointee.ptr[Int(i)]
         events.append(MidiEvent(
@@ -39,7 +38,6 @@ func extractEvents(modelOutput: MLMultiArray) -> [MidiEvent] {
     }
     
     free_midi_events(rawEvents)
-    print("It has now been freed!!!")
     
     return events
 }

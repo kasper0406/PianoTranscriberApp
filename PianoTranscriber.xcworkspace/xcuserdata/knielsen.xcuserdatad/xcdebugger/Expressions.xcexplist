@@ -17,6 +17,14 @@
          contextName = "ModelManager.runModel(_:):ModelManager.swift">
       </ContextState>
       <ContextState
+         contextName = "extractEvents(modelOutput:):ModelUtils.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "modelOutput.strides">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "closure #1 in ModelManager.prepareSamples(_:):ModelManager.swift">
          <PersistentStrings>
             <PersistentString
