@@ -18,6 +18,7 @@
 		746820C12BF647C600CB4015 /* ModelUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820C02BF647C600CB4015 /* ModelUtils.swift */; };
 		746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820E02BFCE79600CB4015 /* AudioFilePicker.swift */; };
 		746820FF2C009A4F00CB4015 /* Audio2Midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 746820FE2C009A4F00CB4015 /* Audio2Midi.mlpackage */; };
+		746821092C0493F100CB4015 /* InferenceProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746821082C0493F100CB4015 /* InferenceProgressView.swift */; };
 		F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +57,7 @@
 		746820D92BF67DD800CB4015 /* PianoTranscriber-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PianoTranscriber-Bridging-Header.h"; sourceTree = "<group>"; };
 		746820E02BFCE79600CB4015 /* AudioFilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilePicker.swift; sourceTree = "<group>"; };
 		746820FE2C009A4F00CB4015 /* Audio2Midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Audio2Midi.mlpackage; sourceTree = "<group>"; };
+		746821082C0493F100CB4015 /* InferenceProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InferenceProgressView.swift; sourceTree = "<group>"; };
 		A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.release.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -128,6 +130,7 @@
 				746820D92BF67DD800CB4015 /* PianoTranscriber-Bridging-Header.h */,
 				746820C02BF647C600CB4015 /* ModelUtils.swift */,
 				746820E02BFCE79600CB4015 /* AudioFilePicker.swift */,
+				746821082C0493F100CB4015 /* InferenceProgressView.swift */,
 			);
 			path = PianoTranscriber;
 			sourceTree = "<group>";
@@ -335,6 +338,7 @@
 				7414BDBE2BF50753003E242C /* PianoTranscriberApp.swift in Sources */,
 				746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */,
 				746820FF2C009A4F00CB4015 /* Audio2Midi.mlpackage in Sources */,
+				746821092C0493F100CB4015 /* InferenceProgressView.swift in Sources */,
 				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

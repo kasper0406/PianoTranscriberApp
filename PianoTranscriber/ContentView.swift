@@ -11,40 +11,55 @@ import UniformTypeIdentifiers
 struct ContentView: View {
     @StateObject private var modelManager = ModelManager()
     
-    @State private var resultText: String = "Calling model..."
-    @State private var audioFileURL: URL?
-    
+    @State private var inferenceResult: InferenceResult?
     @State private var isFilePickerShowing = false;
     
     var body: some View {
-        VStack {
-            if let url = audioFileURL {
-                Text("File seslected \(url.lastPathComponent)")
-                Text(resultText)
-                    .padding()
-                    .onAppear {
-                        if let result = modelManager.runModel(url) {
-                            resultText = result
-                        } else {
-                            resultText = "Failed to call the model :("
-                        }
+        let showInferenceProgress = switch modelManager.inferenceStatus {
+        case InferenceProgress.notRunning:
+            false
+        default:
+            true
+        }
+        
+        ZStack {
+            NavigationView {
+                VStack {
+                    if let result = inferenceResult {
+                        Text("Inference completed for \(result.audioFileUrl.lastPathComponent)")
+                        Text("Found \(result.events.count) events")
+                    } else {
+                        Text("Import a file ^^")
                     }
-            } else {
-                Button("Selected an audio file xD") {
-                    isFilePickerShowing.toggle()
-                }.fileImporter(
-                    isPresented: $isFilePickerShowing,
-                    allowedContentTypes: [.audio],
-                    onCompletion: { pickedFile in
-                        do {
-                            self.audioFileURL = try pickedFile.get()
-                        } catch {
-                            self.audioFileURL = nil
-                        }
-                    })
+                }
+                .padding()
+                .navigationBarItems(trailing: Button(action: {
+                        isFilePickerShowing = true
+                    }) {
+                        Image(systemName: "plus")
+                    }.fileImporter(
+                        isPresented: $isFilePickerShowing,
+                        allowedContentTypes: [.audio],
+                        onCompletion: { pickedFile in
+                            do {
+                                let audioFileUrl = try pickedFile.get()
+                                Task {
+                                    inferenceResult = await modelManager.runModel(audioFileUrl)
+                                }
+                            } catch {
+                                inferenceResult = nil
+                            }
+                        })
+                )
+            }
+            .blur(radius: showInferenceProgress ? 3 : 0)
+            
+            if showInferenceProgress {
+                InferenceProgressView(progress: modelManager.inferenceStatus)
+                    .transition(.opacity)
             }
         }
-        .padding()
+        .animation(.easeInOut, value: showInferenceProgress)
     }
 }
 

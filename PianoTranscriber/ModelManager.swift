@@ -14,7 +14,15 @@ enum Audio2MidiModelErrors: Error {
     case resamplingFailed
 }
 
+struct InferenceResult {
+    let audioFileUrl: URL
+    let events: [MidiEvent]
+}
+
 class ModelManager: ObservableObject {
+    @Published private(set) var inferenceStatus: InferenceProgress = InferenceProgress.notRunning
+    // @Published var cancelRunningInferrence: Bool = false
+    
     private var model: Audio2Midi?
 
     // TODO(knielsen): Export these constants in the CoreML model metadata
@@ -35,11 +43,32 @@ class ModelManager: ObservableObject {
         }
     }
 
-    func runModel(_ audioFileUrl: URL) -> String? {
-        do {
-            let inputs = try prepareSamples(audioFileUrl)
-            let outputs = try model!.predictions(inputs: inputs)
-
+    func runModel(_ audioFileUrl: URL) async -> InferenceResult? {
+        defer {
+            // ¯\_(ツ)_/¯
+            Task { @MainActor in
+                self.inferenceStatus = InferenceProgress.notRunning
+            }
+        }
+        
+        let result = Task.detached(priority: .userInitiated) {
+            await MainActor.run {
+                self.inferenceStatus = InferenceProgress.loadingAudio
+            }
+            
+            let inputs = try self.prepareSamples(audioFileUrl)
+            
+            // TODO: Update the status
+            await MainActor.run {
+                self.inferenceStatus = InferenceProgress.inferring(0.5)
+            }
+            let outputs = try self.model!.predictions(inputs: inputs)
+            
+            // TODO: Stitch the predicted events
+            
+            await MainActor.run {
+                self.inferenceStatus = InferenceProgress.eventizing
+            }
             let middleProbs = outputs[outputs.count / 2].probs
             let events = extractEvents(modelOutput: middleProbs)
             
@@ -47,9 +76,13 @@ class ModelManager: ObservableObject {
                 print("Predicted event (\(event.attackTime), \(event.duration), \(event.note))")
             }
             
-            return "Successfully called the model ^^\nPredicted \(events.count) events"
+            return InferenceResult(audioFileUrl: audioFileUrl, events: events)
+        }
+        
+        do {
+            return try await result.value
         } catch {
-            return "Failed to call the model!"
+            return nil
         }
     }
     
