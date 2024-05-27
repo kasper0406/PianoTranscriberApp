@@ -187,6 +187,7 @@
 				7414BDB62BF50753003E242C /* Sources */,
 				7414BDB72BF50753003E242C /* Frameworks */,
 				7414BDB82BF50753003E242C /* Resources */,
+				5F02BCA7DCE7A3DA7A539476 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -304,6 +305,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		5F02BCA7DCE7A3DA7A539476 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		979F2CF2908F713707AD3D31 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

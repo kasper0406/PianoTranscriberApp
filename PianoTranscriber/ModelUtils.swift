@@ -15,15 +15,15 @@ struct MidiEvent {
     var velocity: Int
 }
 
-func extractEvents(modelOutput: MLMultiArray) -> [MidiEvent] {
-    let numFrames = modelOutput.shape[0].int32Value
-    let numNotes = modelOutput.shape[1].int32Value
-    let frameStride = modelOutput.strides[0].int32Value
-    let noteStride = modelOutput.strides[1].int32Value
-
-    let rawEvents = modelOutput.withUnsafeBytes({ rawPtr in
+func extractEvents(combinedOutput: MLMultiArray, overlap: Double, durationPerFrame: Double) -> [MidiEvent] {
+    let rawEvents = combinedOutput.withUnsafeBytes({ rawPtr in
         let ptr = rawPtr.baseAddress?.assumingMemoryBound(to: UInt8.self)
-        return extract_midi_events(numFrames, frameStride, numNotes, noteStride, ptr)
+        let rustArray = MLMultiArrayWrapper3(
+            strides: (combinedOutput.strides[0].uint64Value, combinedOutput.strides[1].uint64Value, combinedOutput.strides[2].uint64Value),
+            dims: (combinedOutput.shape[0].uint64Value, combinedOutput.shape[1].uint64Value, combinedOutput.shape[2].uint64Value),
+            data: ptr
+        )
+        return extract_midi_events(rustArray, overlap, durationPerFrame)
     })
 
     var events: [MidiEvent] = []
