@@ -19,6 +19,8 @@
 		746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820E02BFCE79600CB4015 /* AudioFilePicker.swift */; };
 		746820FF2C009A4F00CB4015 /* Audio2Midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 746820FE2C009A4F00CB4015 /* Audio2Midi.mlpackage */; };
 		746821092C0493F100CB4015 /* InferenceProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746821082C0493F100CB4015 /* InferenceProgressView.swift */; };
+		7468210E2C06018900CB4015 /* PianoRollScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7468210D2C06018900CB4015 /* PianoRollScene.swift */; };
+		746821102C06095F00CB4015 /* PianoRollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7468210F2C06095F00CB4015 /* PianoRollView.swift */; };
 		F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +60,8 @@
 		746820E02BFCE79600CB4015 /* AudioFilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilePicker.swift; sourceTree = "<group>"; };
 		746820FE2C009A4F00CB4015 /* Audio2Midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Audio2Midi.mlpackage; sourceTree = "<group>"; };
 		746821082C0493F100CB4015 /* InferenceProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InferenceProgressView.swift; sourceTree = "<group>"; };
+		7468210D2C06018900CB4015 /* PianoRollScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollScene.swift; sourceTree = "<group>"; };
+		7468210F2C06095F00CB4015 /* PianoRollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollView.swift; sourceTree = "<group>"; };
 		A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.release.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -121,6 +125,7 @@
 		7414BDBC2BF50753003E242C /* PianoTranscriber */ = {
 			isa = PBXGroup;
 			children = (
+				7468210A2C0600DD00CB4015 /* PianoRoll */,
 				746820BB2BF61F2500CB4015 /* Resources */,
 				7414BDBD2BF50753003E242C /* PianoTranscriberApp.swift */,
 				7414BDBF2BF50753003E242C /* ContentView.swift */,
@@ -166,6 +171,15 @@
 				746820FE2C009A4F00CB4015 /* Audio2Midi.mlpackage */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		7468210A2C0600DD00CB4015 /* PianoRoll */ = {
+			isa = PBXGroup;
+			children = (
+				7468210D2C06018900CB4015 /* PianoRollScene.swift */,
+				7468210F2C06095F00CB4015 /* PianoRollView.swift */,
+			);
+			path = PianoRoll;
 			sourceTree = "<group>";
 		};
 		A794B1AB51607FFF5D7EA15B /* Frameworks */ = {
@@ -353,9 +367,11 @@
 			files = (
 				7414BDC02BF50753003E242C /* ContentView.swift in Sources */,
 				746820C12BF647C600CB4015 /* ModelUtils.swift in Sources */,
+				7468210E2C06018900CB4015 /* PianoRollScene.swift in Sources */,
 				7414BDBE2BF50753003E242C /* PianoTranscriberApp.swift in Sources */,
 				746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */,
 				746820FF2C009A4F00CB4015 /* Audio2Midi.mlpackage in Sources */,
+				746821102C06095F00CB4015 /* PianoRollView.swift in Sources */,
 				746821092C0493F100CB4015 /* InferenceProgressView.swift in Sources */,
 				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
 			);

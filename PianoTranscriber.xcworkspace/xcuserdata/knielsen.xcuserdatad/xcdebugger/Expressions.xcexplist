@@ -3,7 +3,7 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "ModelManager.loadModel(modelName:):ModelManager.swift">
+         contextName = "ModelManager.runModel(_:):ModelManager.swift">
       </ContextState>
       <ContextState
          contextName = "closure #2 in closure #2 in ModelManager.prepareSamples(_:):ModelManager.swift">
@@ -14,7 +14,27 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "ModelManager.runModel(_:):ModelManager.swift">
+         contextName = "closure #1 in ModelManager.runModel(_:):ModelManager.swift">
+      </ContextState>
+      <ContextState
+         contextName = "Audio2Midi.prediction(input:options:):Audio2Midi.swift">
+      </ContextState>
+      <ContextState
+         contextName = "extractEvents(combinedOutput:overlap:durationPerFrame:):ModelUtils.swift">
+      </ContextState>
+      <ContextState
+         contextName = "PianoRoll.didMove(to:):PianoRollScene.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.frame">
+            </PersistentString>
+            <PersistentString
+               value = "self.frame.maxY">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ModelManager.loadModel(modelName:):ModelManager.swift">
       </ContextState>
       <ContextState
          contextName = "extractEvents(modelOutput:):ModelUtils.swift">
@@ -31,9 +51,6 @@
                value = "leftSamples[240000 + i]">
             </PersistentString>
          </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "Audio2Midi.prediction(input:options:):Audio2Midi.swift">
       </ContextState>
    </ContextStates>
 </VariablesViewState>
