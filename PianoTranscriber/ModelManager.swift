@@ -107,10 +107,6 @@ class ModelManager: ObservableObject {
             let durationPerFrame = self.windowDuration / combinedProbs.shape[2].doubleValue
             let events = extractEvents(combinedOutput: combinedProbs, overlap: self.windowOverlap, durationPerFrame: durationPerFrame)
             
-            for event in events {
-                print("Predicted event (\(event.attackTime), \(event.duration), \(event.note))")
-            }
-            
             return InferenceResult(audioFileUrl: audioFileUrl, events: events)
         }
         

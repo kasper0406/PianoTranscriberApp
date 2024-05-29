@@ -8,9 +8,9 @@
 import Foundation
 import CoreML
 
-struct MidiEvent {
-    var attackTime: Int
-    var duration: Int
+struct MidiEvent: Hashable {
+    var attackTime: Double // In seconds
+    var duration: Double // In seconds
     var note: Int
     var velocity: Int
 }
@@ -29,9 +29,12 @@ func extractEvents(combinedOutput: MLMultiArray, overlap: Double, durationPerFra
     var events: [MidiEvent] = []
     for i in 0..<rawEvents!.pointee.length {
         let rawEvent = rawEvents!.pointee.ptr[Int(i)]
+        
+        let attackTimeInSeconds = Double(rawEvent.attack_time) * durationPerFrame
+        let durationInSeconds = Double(rawEvent.duration) * durationPerFrame
         events.append(MidiEvent(
-            attackTime: Int(rawEvent.attack_time),
-            duration: Int(rawEvent.duration),
+            attackTime: attackTimeInSeconds,
+            duration: durationInSeconds,
             note: Int(rawEvent.note),
             velocity: Int(rawEvent.velocity)
         ))

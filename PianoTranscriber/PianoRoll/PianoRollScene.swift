@@ -7,49 +7,140 @@
 
 import Foundation
 import SpriteKit
+import Algorithms
 
 enum PianoKeyType {
     case white
     case black
 }
 
-class PianoRoll: SKScene {
+private func findMidiEventJustAfter(_ events: [MidiEvent], _ time: Double) -> Int? {
+    var low = 0
+    var high = events.count
+
+    while low < high {
+        let mid = low + (high - low) / 2
+        if events[mid].attackTime < time {
+            low = mid + 1
+        } else {
+            high = mid
+        }
+    }
+
+    if low >= events.count {
+        return nil
+    }
+    return low
+}
+
+class PianoRoll: SKScene, ObservableObject {
     
     var events: [MidiEvent] = []
+    private var eventToNode: [MidiEvent:SKSpriteNode] = [:]
+    private var keyToNode: [Int:(PianoKeyType, SKSpriteNode)] = [:]
+    
+    @Published private(set) var isPlaying: Bool = false
     
     let pianoWidth: Double = 35.0
     let pianoBorder1Width: Double = 1.0
     let pianoBorder2Width: Double = 3.0
-    
+    private lazy var eventStartPosition: Double = pianoWidth + pianoBorder1Width + pianoBorder2Width
     
     let numKeys: Int = 88
     let numWhiteKeys: Int = 52
+    
+    @Published private(set) var playbackTime: Double = 0
+    private var lastUpdateTime: TimeInterval = 0
+    private var eventNode: SKNode? = nil
+    
+    let timeScaleFactor = 400.0 // (x units / second)
+    
+    let eventColor: UIColor = UIColor(red: 0.2, green: 0.2, blue: 1.0, alpha: 1.0)
+    let keyColorWhite: UIColor = UIColor(red: 0.99, green: 0.96, blue: 0.94, alpha: 1.0)
+    let keyColorBlack: UIColor = .black
+    
+    func play() {
+        isPlaying = true
+    }
+    
+    func pause() {
+        isPlaying = false
+    }
 
     override func didMove(to view: SKView) {
         backgroundColor = .systemBackground
         
         let noteLines = drawPiano()
         drawEvents(
-            beginningX: pianoWidth + pianoBorder1Width + pianoBorder2Width,
             noteLines: noteLines
         )
     }
     
-    private func drawEvents(beginningX: Double, noteLines: [(CGFloat, CGFloat)]) {
-        let scaleFactor = 1
+    override func update(_ sceneTime: TimeInterval) {
+        if isPlaying {
+            let deltaTime = sceneTime - lastUpdateTime
+            let playbackTimeBefore = self.playbackTime
+            setPlaybackTime(self.playbackTime + deltaTime)
+            
+            var maybeIdx = findMidiEventJustAfter(self.events, playbackTimeBefore)
+            while maybeIdx != nil && self.events[maybeIdx!].attackTime < self.playbackTime {
+                // The event was just activated - animate it!
+                let event = self.events[maybeIdx!]
+                let eventNode = eventToNode[event]!
+                let (keyType, keyNode) = keyToNode[event.note]!
+
+                let fadeInTime = 0.01
+                let fadeOutTime = 0.1
+                let activeDuration = event.duration
+                let changeColor = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: fadeInTime)
+                let keepColor = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: activeDuration)
+                
+                let revertColorEvent = SKAction.colorize(with: eventColor, colorBlendFactor: 1.0, duration: fadeOutTime)
+                let sequenceEvent = SKAction.sequence([changeColor, keepColor, revertColorEvent])
+                eventNode.run(sequenceEvent)
+
+                let keyColor = switch keyType {
+                case .black: keyColorBlack
+                case .white: keyColorWhite
+                }
+                let revertColorKey = SKAction.colorize(with: keyColor, colorBlendFactor: 1.0, duration: fadeOutTime)
+                let sequenceKey = SKAction.sequence([changeColor, keepColor, revertColorKey])
+                keyNode.run(sequenceKey)
+
+                maybeIdx! += 1
+                if maybeIdx! >= self.events.count {
+                    maybeIdx = nil
+                }
+            }
+        }
         
-        let eventColor = UIColor(red: 1.0, green: 0.2, blue: 0.2, alpha: 1.0)
-        for event in events {
-            let (startY, endY) = noteLines[event.note]
+        lastUpdateTime = sceneTime
+    }
+    
+    func setPlaybackTime(_ time: TimeInterval) {
+        let distance = (self.playbackTime - time) * timeScaleFactor
+        self.eventNode!.position.x += distance
+        self.playbackTime = time
+    }
+    
+    private func drawEvents(noteLines: [(CGFloat, CGFloat)]) {
+        self.eventNode = SKNode()
+        self.eventNode!.position.x = frame.minX + eventStartPosition
+        addChild(eventNode!)
+
+        for midiEvent in events {
+            let (startY, endY) = noteLines[midiEvent.note]
             let height = CGFloat(endY - startY)
             
-            let startX = event.attackTime * scaleFactor
-            let endX = (event.attackTime + event.duration) * scaleFactor
+            let startX = midiEvent.attackTime * timeScaleFactor
+            let endX = (midiEvent.attackTime + midiEvent.duration) * timeScaleFactor
             let width = CGFloat(endX - startX)
             
             let event = SKSpriteNode(color: eventColor, size: CGSize(width: width, height: height))
-            event.position = CGPoint(x: beginningX + Double(startX) + width / 2, y: (startY + endY) / 2)
-            addChild(event)
+            event.position = CGPoint(x: Double(startX) + width / 2, y: (startY + endY) / 2)
+            event.zPosition = 1.0
+            self.eventNode!.addChild(event)
+            eventToNode.updateValue(event, forKey: midiEvent)
         }
     }
     
@@ -92,8 +183,8 @@ class PianoRoll: SKScene {
             default: PianoKeyType.black
             }
             let keyColor = switch keyType {
-            case .black: UIColor.black
-            case .white: UIColor(red: 0.99, green: 0.96, blue: 0.94, alpha: 1.0)
+            case .black: keyColorBlack
+            case .white: keyColorWhite
             }
             let keyHeight = switch keyType {
             case .black: blackKeyHeight
@@ -106,15 +197,16 @@ class PianoRoll: SKScene {
             
             let key = SKSpriteNode(color: keyColor, size: CGSize(width: keyWidth, height: keyHeight))
             key.zPosition = switch keyType {
-            case .black: 2.0
-            case .white: 1.0
+            case .black: 4.0
+            case .white: 3.0
             }
             
             let keyStart = yPosition - keyStartSpacing[keyIdx % 12]
-            let keyEnd = keyStart + keyHeight
-            noteLines.append((keyStart, keyEnd))
+            let keyEnd = keyStart - keyHeight
+            noteLines.append((keyEnd, keyStart)) // Direction reversed because we draw in reverse
             key.position = CGPoint(x: self.frame.minX + pianoBorder1Width + pianoWidth - keyWidth / 2, y: keyStart - keyHeight / 2)
             addChild(key)
+            keyToNode.updateValue((keyType, key), forKey: keyId)
             
             if keyIdx % 12 == 11 {
                 yPosition -= keyStartSpacing[12]
@@ -125,11 +217,19 @@ class PianoRoll: SKScene {
         let borderColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
         let border1 = SKSpriteNode(color: borderColor, size: CGSize(width: pianoBorder1Width, height: self.frame.height))
         border1.position = CGPoint(x: self.frame.minX + pianoBorder1Width / 2, y: self.frame.midY)
+        border1.zPosition = 2.0
         addChild(border1)
         
         let border2 = SKSpriteNode(color: borderColor, size: CGSize(width: pianoBorder2Width, height: self.frame.height))
         border2.position = CGPoint(x: self.frame.minX + pianoBorder1Width + pianoWidth + pianoBorder2Width / 2, y: self.frame.midY)
+        border2.zPosition = 2.0
         addChild(border2)
+        
+        // Draw piano background
+        let pianoBackground = SKSpriteNode(color: .black, size: CGSize(width: pianoWidth, height: self.frame.height))
+        pianoBackground.position = CGPoint(x: self.frame.minX + pianoBorder1Width + pianoWidth / 2, y: self.frame.midY)
+        pianoBackground.zPosition = 2.0
+        addChild(pianoBackground)
         
         return noteLines
     }
