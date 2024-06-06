@@ -8,6 +8,12 @@
 import Foundation
 import AVFoundation
 
+enum AudioSelector: Equatable {
+    case mix
+    case original
+    case midi
+}
+
 class AudioManager: ObservableObject {
     let sampleRate = 44100.0
     
@@ -15,7 +21,12 @@ class AudioManager: ObservableObject {
     let engine: AVAudioEngine
     let sampler: AVAudioUnitSampler
     let sequencer: AVAudioSequencer
+    let player: AVAudioPlayerNode
     let audioSession: AVAudioSession
+    
+    var originalAudioFile: AVAudioFile?
+    
+    @Published var audioSelector = AudioSelector.midi
     
     init() {
         // Set up formats and export settings
@@ -27,17 +38,45 @@ class AudioManager: ObservableObject {
 
         engine = AVAudioEngine()
         sampler = AVAudioUnitSampler()
+        player = AVAudioPlayerNode()
 
         // Setup the engine
         engine.attach(sampler)
         engine.connect(sampler, to: engine.mainMixerNode, format: format)
+
+        engine.attach(player)
+        engine.connect(player, to: engine.mainMixerNode, format: format)
+
         engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
 
         // Setup the sequencer
         sequencer = AVAudioSequencer(audioEngine: engine)
         
-        self.audioSession = AVAudioSession.sharedInstance()
+        audioSession = AVAudioSession.sharedInstance()
         handleNotificationInterruptions()
+        
+        selectAudio(self.audioSelector)
+    }
+    
+    deinit {
+        if let audioFile = self.originalAudioFile?.url {
+            audioFile.stopAccessingSecurityScopedResource()
+        }
+    }
+    
+    func selectAudio(_ audioSelector: AudioSelector) {
+        self.audioSelector = audioSelector
+        switch audioSelector {
+        case .midi:
+            player.volume = 0.0
+            sampler.volume = 1.0
+        case .original:
+            player.volume = 1.0
+            sampler.volume = 0.0
+        case .mix:
+            player.volume = 0.6
+            sampler.volume = 0.6
+        }
     }
     
     func setup() throws {
@@ -123,7 +162,24 @@ class AudioManager: ObservableObject {
         }
     }
     
-    func stageEvents(events: [MidiEvent]) {
+    func stageEvents(events: [MidiEvent], originalAudioFileUrl: URL) {
+        // Set up the original audio player
+        if let oldFile = self.originalAudioFile?.url {
+            oldFile.stopAccessingSecurityScopedResource()
+        }
+        do {
+            originalAudioFileUrl.startAccessingSecurityScopedResource()
+            self.originalAudioFile = try AVAudioFile(forReading: originalAudioFileUrl)
+            player.scheduleSegment(originalAudioFile!,
+                                   startingFrame: AVAudioFramePosition(0),
+                                   frameCount: AVAudioFrameCount(originalAudioFile!.length),
+                                   at: nil)
+        } catch {
+            originalAudioFileUrl.stopAccessingSecurityScopedResource()
+            print("Failed to play original audio!")
+        }
+
+        // Setup the sequencer
         if sequencer.tracks.isEmpty {
             sequencer.createAndAppendTrack()
         }
@@ -142,13 +198,23 @@ class AudioManager: ObservableObject {
     
     func play() throws {
         try sequencer.start()
+        player.play()
     }
     
     func pause() {
         sequencer.stop()
+        player.stop()
     }
     
     func setPlaybackTime(_ time: TimeInterval) {
         sequencer.currentPositionInSeconds = time
+        
+        if let audioFile = self.originalAudioFile {
+            let playerStartFrame = AVAudioFramePosition(audioFile.fileFormat.sampleRate * time)
+            player.scheduleSegment(audioFile,
+                                   startingFrame: playerStartFrame,
+                                   frameCount: AVAudioFrameCount(audioFile.length),
+                                   at: nil)
+        }
     }
 }

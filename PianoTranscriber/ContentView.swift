@@ -28,7 +28,7 @@ struct ContentView: View {
                 VStack {
                     if let result = inferenceResult {
                         Text("Inference completed for \(result.audioFileUrl.lastPathComponent)")
-                        PianoRollView(events: result.events, audioManager: audioManager)
+                        PianoRollView(events: result.events, audioFileUrl: result.audioFileUrl, audioManager: audioManager)
                     } else {
                         Text("Import a file ^^")
                     }

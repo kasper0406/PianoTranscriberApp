@@ -63,10 +63,10 @@ class PianoRoll: SKScene, ObservableObject {
     let keyColorWhite: UIColor = UIColor(red: 0.99, green: 0.96, blue: 0.94, alpha: 1.0)
     let keyColorBlack: UIColor = .black
     
-    func setup(_ events: [MidiEvent], _ audioManager: AudioManager) throws {
+    func setup(_ events: [MidiEvent], _ audioFileUrl: URL, _ audioManager: AudioManager) throws {
         self.events = events
         self.audioManager = audioManager
-        self.audioManager?.stageEvents(events: events)
+        self.audioManager?.stageEvents(events: events, originalAudioFileUrl: audioFileUrl)
     }
     
     func play() {
