@@ -11,6 +11,8 @@ import SpriteKit
 struct PianoRollView: View {
     
     let events: [MidiEvent]
+    let audioManager: AudioManager
+    
     @StateObject var scene = PianoRoll()
     
     var body: some View {
@@ -25,7 +27,7 @@ struct PianoRollView: View {
                     scene.setPlaybackTime(0.0)
                 }) {
                     Image(systemName: "backward.end")
-                }.disabled(scene.playbackTime == 0.0)
+                }.disabled(scene.isAtBeginning)
 
                 Button(action: {
                     if scene.isPlaying {
@@ -46,7 +48,11 @@ struct PianoRollView: View {
     
     func setupScene(size: CGSize) -> PianoRoll {
         scene.size = size
-        scene.events = self.events
+        do {
+            try scene.setup(events, audioManager)
+        } catch {
+            print("Failed to set up piano roll! :(")
+        }
         return scene
     }
 }

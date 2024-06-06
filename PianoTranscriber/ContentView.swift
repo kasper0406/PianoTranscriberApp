@@ -10,6 +10,7 @@ import UniformTypeIdentifiers
 
 struct ContentView: View {
     @StateObject private var modelManager = ModelManager()
+    @StateObject private var audioManager = AudioManager()
     
     @State private var inferenceResult: InferenceResult?
     @State private var isFilePickerShowing = false;
@@ -27,7 +28,7 @@ struct ContentView: View {
                 VStack {
                     if let result = inferenceResult {
                         Text("Inference completed for \(result.audioFileUrl.lastPathComponent)")
-                        PianoRollView(events: result.events)
+                        PianoRollView(events: result.events, audioManager: audioManager)
                     } else {
                         Text("Import a file ^^")
                     }
@@ -60,9 +61,12 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut, value: showInferenceProgress)
+        .onAppear() {
+            do {
+                try audioManager.setup()
+            } catch {
+                print("Failed to set up audio manager")
+            }
+        }
     }
-}
-
-#Preview {
-    ContentView()
 }

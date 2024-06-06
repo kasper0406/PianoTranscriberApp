@@ -35,11 +35,15 @@ private func findMidiEventJustAfter(_ events: [MidiEvent], _ time: Double) -> In
 
 class PianoRoll: SKScene, ObservableObject {
     
-    var events: [MidiEvent] = []
+    private var audioManager: AudioManager?
+    
+    private var events: [MidiEvent] = []
     private var eventToNode: [MidiEvent:SKSpriteNode] = [:]
     private var keyToNode: [Int:(PianoKeyType, SKSpriteNode)] = [:]
+    private var nextEventIdx: Int? = 0
     
     @Published private(set) var isPlaying: Bool = false
+    @Published private(set) var isAtBeginning: Bool = true
     
     let pianoWidth: Double = 35.0
     let pianoBorder1Width: Double = 1.0
@@ -49,7 +53,7 @@ class PianoRoll: SKScene, ObservableObject {
     let numKeys: Int = 88
     let numWhiteKeys: Int = 52
     
-    @Published private(set) var playbackTime: Double = 0
+    private var playbackTime: Double = 0
     private var lastUpdateTime: TimeInterval = 0
     private var eventNode: SKNode? = nil
     
@@ -59,17 +63,37 @@ class PianoRoll: SKScene, ObservableObject {
     let keyColorWhite: UIColor = UIColor(red: 0.99, green: 0.96, blue: 0.94, alpha: 1.0)
     let keyColorBlack: UIColor = .black
     
+    func setup(_ events: [MidiEvent], _ audioManager: AudioManager) throws {
+        self.events = events
+        self.audioManager = audioManager
+        self.audioManager?.stageEvents(events: events)
+    }
+    
     func play() {
+        print("Playing at position \(playbackTime)")
+        isAtBeginning = false
         isPlaying = true
+        
+        // It is slightly incorrect to play here, and then in the update function we use a
+        // potentially wrong delta time to update event positions.
+        // However, the update function should be called very frequently, so I expect the delay
+        // to be insignificant.
+        do {
+            try audioManager?.play()
+        } catch {
+            print("Failed to play")
+        }
     }
     
     func pause() {
+        audioManager?.pause()
         isPlaying = false
     }
 
     override func didMove(to view: SKView) {
         backgroundColor = .systemBackground
-        
+        view.ignoresSiblingOrder = true
+
         let noteLines = drawPiano()
         drawEvents(
             noteLines: noteLines
@@ -78,14 +102,13 @@ class PianoRoll: SKScene, ObservableObject {
     
     override func update(_ sceneTime: TimeInterval) {
         if isPlaying {
+            var possibleEventsToActivateIdx = self.nextEventIdx
             let deltaTime = sceneTime - lastUpdateTime
-            let playbackTimeBefore = self.playbackTime
-            setPlaybackTime(self.playbackTime + deltaTime)
-            
-            var maybeIdx = findMidiEventJustAfter(self.events, playbackTimeBefore)
-            while maybeIdx != nil && self.events[maybeIdx!].attackTime < self.playbackTime {
+            updateEventsToPosition(self.playbackTime + deltaTime)
+
+            while possibleEventsToActivateIdx != nil && self.events[possibleEventsToActivateIdx!].attackTime < self.playbackTime {
                 // The event was just activated - animate it!
-                let event = self.events[maybeIdx!]
+                let event = self.events[possibleEventsToActivateIdx!]
                 let eventNode = eventToNode[event]!
                 let (keyType, keyNode) = keyToNode[event.note]!
 
@@ -107,9 +130,9 @@ class PianoRoll: SKScene, ObservableObject {
                 let sequenceKey = SKAction.sequence([changeColor, keepColor, revertColorKey])
                 keyNode.run(sequenceKey)
 
-                maybeIdx! += 1
-                if maybeIdx! >= self.events.count {
-                    maybeIdx = nil
+                possibleEventsToActivateIdx! += 1
+                if possibleEventsToActivateIdx! >= self.events.count {
+                    possibleEventsToActivateIdx = nil
                 }
             }
         }
@@ -118,9 +141,27 @@ class PianoRoll: SKScene, ObservableObject {
     }
     
     func setPlaybackTime(_ time: TimeInterval) {
+        isAtBeginning = time == 0.0
+        audioManager?.setPlaybackTime(time)
+        nextEventIdx = findMidiEventJustAfter(self.events, time)
+        updateEventsToPosition(time)
+    }
+    
+    private func updateEventsToPosition(_ time: TimeInterval) {
         let distance = (self.playbackTime - time) * timeScaleFactor
         self.eventNode!.position.x += distance
         self.playbackTime = time
+        
+        // Update the nextEventId
+        while self.nextEventIdx != nil &&
+                self.events[nextEventIdx!].attackTime < time {
+            self.nextEventIdx! += 1
+            if self.nextEventIdx! >= self.events.count {
+                self.nextEventIdx = nil
+            }
+        }
+        
+        updateEventVisibility()
     }
     
     private func drawEvents(noteLines: [(CGFloat, CGFloat)]) {
@@ -139,9 +180,53 @@ class PianoRoll: SKScene, ObservableObject {
             let event = SKSpriteNode(color: eventColor, size: CGSize(width: width, height: height))
             event.position = CGPoint(x: Double(startX) + width / 2, y: (startY + endY) / 2)
             event.zPosition = 1.0
-            self.eventNode!.addChild(event)
             eventToNode.updateValue(event, forKey: midiEvent)
         }
+        
+        updateEventVisibility()
+    }
+    
+    private func updateEventVisibility() {
+        let isVisible = { (eventNode: SKSpriteNode) -> Bool in
+            let startX = eventNode.position.x - eventNode.size.width / 2
+            let endX = eventNode.position.x + eventNode.size.width / 2
+            
+            let currentPosition = self.playbackTime * self.timeScaleFactor
+            let lastVisiblePosition = currentPosition + self.size.width
+            return endX >= currentPosition && startX <= lastVisiblePosition
+        }
+        
+        // Detach all events that we not on the screen
+        for node in self.eventNode!.children {
+            if let eventNode = node as? SKSpriteNode {
+                if !isVisible(eventNode) {
+                    eventNode.removeFromParent()
+                }
+            }
+        }
+        
+        // Show all events from maybeIdx until they are off-screen
+        var onScreenIdx = if let idx = self.nextEventIdx {
+            idx
+        } else { self.events.count }
+        while onScreenIdx < self.events.count {
+            let eventNode = self.eventToNode[self.events[onScreenIdx]]!
+            // The node is already displayed
+            if eventNode.parent != nil {
+                onScreenIdx += 1
+                continue
+            }
+            
+            // The node should now be displayed
+            if isVisible(eventNode) {
+                self.eventNode!.addChild(eventNode)
+                onScreenIdx += 1
+                continue
+            }
+
+            break
+        }
+        
     }
     
     private func drawPiano() -> [(CGFloat, CGFloat)] {

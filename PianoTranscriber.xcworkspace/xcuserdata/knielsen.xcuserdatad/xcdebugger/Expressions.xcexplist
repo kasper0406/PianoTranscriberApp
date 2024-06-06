@@ -3,7 +3,7 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "ModelManager.runModel(_:):ModelManager.swift">
+         contextName = "closure #1 in ModelManager.runModel(_:):ModelManager.swift">
       </ContextState>
       <ContextState
          contextName = "closure #2 in closure #2 in ModelManager.prepareSamples(_:):ModelManager.swift">
@@ -14,7 +14,15 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "closure #1 in ModelManager.runModel(_:):ModelManager.swift">
+         contextName = "ModelManager.runModel(_:):ModelManager.swift">
+      </ContextState>
+      <ContextState
+         contextName = "PianoRoll.updateEventVisibility():PianoRollScene.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "onScreenIdx">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "Audio2Midi.prediction(input:options:):Audio2Midi.swift">
