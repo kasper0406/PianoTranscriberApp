@@ -25,6 +25,7 @@ class AudioManager: ObservableObject {
     let audioSession: AVAudioSession
     
     var originalAudioFile: AVAudioFile?
+    @Published var originalAudioDuration: Double = 0.0
     
     @Published var audioSelector = AudioSelector.midi
     
@@ -170,6 +171,7 @@ class AudioManager: ObservableObject {
         do {
             originalAudioFileUrl.startAccessingSecurityScopedResource()
             self.originalAudioFile = try AVAudioFile(forReading: originalAudioFileUrl)
+            self.originalAudioDuration = Double(self.originalAudioFile!.length) / self.originalAudioFile!.fileFormat.sampleRate
             player.scheduleSegment(originalAudioFile!,
                                    startingFrame: AVAudioFramePosition(0),
                                    frameCount: AVAudioFrameCount(originalAudioFile!.length),

@@ -25,6 +25,19 @@ struct PianoRollView: View {
         self.audioManager = audioManager
     }
 
+    @State var _wasPlaying = false
+    private func userChangingTimeAction(_ isEditing: Bool) {
+        if isEditing {
+            self._wasPlaying = self.scene.isPlaying
+            self.scene.pause()
+        }
+        if !isEditing {
+            if _wasPlaying {
+                self.scene.play()
+            }
+        }
+    }
+    
     var body: some View {
         VStack {
             GeometryReader { geo in
@@ -34,12 +47,35 @@ struct PianoRollView: View {
                     .onChange(of: events) { setupScene(size: geo.size) }
                     .onAppear { setupScene(size: geo.size) }
             }
+            
+            HStack {
+                Text("\(formatTime(time: 0))")  // Start time
+                Spacer()
+                Text("\(formatTime(time: self.scene.playbackTime))")  // Current time
+                Spacer()
+                Text("\(formatTime(time: self.scene.duration))")  // End time
+            }
+            .padding(.horizontal)
+            Slider(
+                value: Binding(
+                    get: {
+                        self.scene.playbackTime
+                    },
+                    set: {(newValue) in
+                        self.scene.setEventsOnlyPlaybackTime(newValue)
+                    }
+                ),
+                in: 0...self.scene.duration,
+                onEditingChanged: userChangingTimeAction
+            )
+            .padding(.horizontal)
+            
             HStack {
                 Button(action: {
                     scene.setPlaybackTime(0.0)
                 }) {
                     Image(systemName: "backward.end")
-                }.disabled(scene.isAtBeginning)
+                }.disabled(scene.playbackTime == 0.0)
 
                 Button(action: {
                     if scene.isPlaying {
@@ -67,6 +103,12 @@ struct PianoRollView: View {
                 }
             }
         }
+    }
+    
+    private func formatTime(time: TimeInterval) -> String {
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
     
     func setupScene(size: CGSize) {

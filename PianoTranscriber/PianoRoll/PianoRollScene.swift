@@ -43,7 +43,8 @@ class PianoRoll: SKScene, ObservableObject {
     private var nextEventIdx: Int? = 0
     
     @Published private(set) var isPlaying: Bool = false
-    @Published private(set) var isAtBeginning: Bool = true
+    @Published private(set) var duration: Double = 0.0
+    @Published var playbackTime: Double = 0.0
     
     let pianoWidth: Double = 35.0
     let pianoBorder1Width: Double = 1.0
@@ -53,7 +54,7 @@ class PianoRoll: SKScene, ObservableObject {
     let numKeys: Int = 88
     let numWhiteKeys: Int = 52
     
-    private var playbackTime: Double = 0
+    private var internalPlaybackTime: Double = 0
     private var lastUpdateTime: TimeInterval = 0
     private var eventNode: SKNode? = nil
     
@@ -68,20 +69,21 @@ class PianoRoll: SKScene, ObservableObject {
         
         self.events = events
         self.audioManager = audioManager
-        self.audioManager?.stageEvents(events: events, originalAudioFileUrl: audioFileUrl)
+        self.audioManager!.stageEvents(events: events, originalAudioFileUrl: audioFileUrl)
+        self.duration = self.audioManager!.originalAudioDuration
         
         nextEventIdx = 0
-        playbackTime = 0
+        internalPlaybackTime = 0
         lastUpdateTime = 0
         isPlaying = false
-        isAtBeginning = true
+        playbackTime = 0.0
         
         redrawAll()
     }
     
     func play() {
-        print("Playing at position \(playbackTime)")
-        isAtBeginning = false
+        print("Playing at position \(internalPlaybackTime)")
+        audioManager?.setPlaybackTime(internalPlaybackTime) // This is kind of hacky, but it is to make sure user editing time works
         isPlaying = true
         
         // It is slightly incorrect to play here, and then in the update function we use a
@@ -121,9 +123,9 @@ class PianoRoll: SKScene, ObservableObject {
         if isPlaying {
             var possibleEventsToActivateIdx = self.nextEventIdx
             let deltaTime = sceneTime - lastUpdateTime
-            updateEventsToPosition(self.playbackTime + deltaTime)
+            updateEventsToPosition(self.internalPlaybackTime + deltaTime)
 
-            while possibleEventsToActivateIdx != nil && self.events[possibleEventsToActivateIdx!].attackTime < self.playbackTime {
+            while possibleEventsToActivateIdx != nil && self.events[possibleEventsToActivateIdx!].attackTime < self.internalPlaybackTime {
                 // The event was just activated - animate it!
                 let event = self.events[possibleEventsToActivateIdx!]
                 let eventNode = eventToNode[event]!
@@ -158,16 +160,31 @@ class PianoRoll: SKScene, ObservableObject {
     }
     
     func setPlaybackTime(_ time: TimeInterval) {
-        isAtBeginning = time == 0.0
         audioManager?.setPlaybackTime(time)
+        setEventsOnlyPlaybackTime(time)
+    }
+    
+    func setEventsOnlyPlaybackTime(_ time: TimeInterval) {
         nextEventIdx = findMidiEventJustAfter(self.events, time)
         updateEventsToPosition(time)
     }
     
     private func updateEventsToPosition(_ time: TimeInterval) {
-        let distance = (self.playbackTime - time) * timeScaleFactor
+        if self.eventNode == nil {
+            // Nothing to do
+            return
+        }
+        
+        let distance = (self.internalPlaybackTime - time) * timeScaleFactor
         self.eventNode!.position.x += distance
-        self.playbackTime = time
+        self.internalPlaybackTime = time
+        
+        // It is expensive to update the playbackTime variable, as it updates the SwiftUI view
+        // Therefore we only do it occationally
+        let playbackTimeLack = 0.2 // seconds
+        if abs(self.internalPlaybackTime - self.playbackTime) > playbackTimeLack {
+            self.playbackTime = self.internalPlaybackTime
+        }
         
         // Update the nextEventId
         while self.nextEventIdx != nil &&
@@ -208,7 +225,7 @@ class PianoRoll: SKScene, ObservableObject {
             let startX = eventNode.position.x - eventNode.size.width / 2
             let endX = eventNode.position.x + eventNode.size.width / 2
             
-            let currentPosition = self.playbackTime * self.timeScaleFactor
+            let currentPosition = self.internalPlaybackTime * self.timeScaleFactor
             let lastVisiblePosition = currentPosition + self.size.width
             return endX >= currentPosition && startX <= lastVisiblePosition
         }
