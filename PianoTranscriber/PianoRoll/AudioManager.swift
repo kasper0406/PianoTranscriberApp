@@ -180,6 +180,8 @@ class AudioManager: ObservableObject {
         }
 
         // Setup the sequencer
+        sequencer.currentPositionInSeconds = 0.0
+        sequencer.tracks.forEach { sequencer.removeTrack($0) }
         if sequencer.tracks.isEmpty {
             sequencer.createAndAppendTrack()
         }

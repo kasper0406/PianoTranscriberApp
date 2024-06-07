@@ -104,7 +104,7 @@ class ModelManager: ObservableObject {
             await MainActor.run {
                 self.inferenceStatus = InferenceProgress.eventizing
             }
-            let durationPerFrame = self.windowDuration / combinedProbs.shape[2].doubleValue
+            let durationPerFrame = self.windowDuration / combinedProbs.shape[1].doubleValue
             let events = extractEvents(combinedOutput: combinedProbs, overlap: self.windowOverlap, durationPerFrame: durationPerFrame)
             
             return InferenceResult(audioFileUrl: audioFileUrl, events: events)

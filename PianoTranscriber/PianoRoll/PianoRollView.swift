@@ -19,12 +19,20 @@ struct PianoRollView: View {
     // TODO: Consider if I can get rid of this
     @State var audioSelect: AudioSelector = AudioSelector.midi
     
+    init(events: [MidiEvent], audioFileUrl: URL, audioManager: AudioManager) {
+        self.events = events
+        self.audioFileUrl = audioFileUrl
+        self.audioManager = audioManager
+    }
+
     var body: some View {
         VStack {
             GeometryReader { geo in
-                SpriteView(scene: setupScene(size: geo.size))
+                SpriteView(scene: scene)
                     .frame(width: geo.size.width, height: geo.size.height)
                     .ignoresSafeArea(.container)
+                    .onChange(of: events) { setupScene(size: geo.size) }
+                    .onAppear { setupScene(size: geo.size) }
             }
             HStack {
                 Button(action: {
@@ -54,20 +62,19 @@ struct PianoRollView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                .onChange(of: audioSelect) { newValue in
-                    self.audioManager.selectAudio(newValue)
+                .onChange(of: audioSelect) {
+                    self.audioManager.selectAudio(audioSelect)
                 }
             }
         }
     }
     
-    func setupScene(size: CGSize) -> PianoRoll {
+    func setupScene(size: CGSize) {
         scene.size = size
         do {
             try scene.setup(events, audioFileUrl, audioManager)
         } catch {
             print("Failed to set up piano roll! :(")
         }
-        return scene
     }
 }

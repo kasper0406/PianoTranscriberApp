@@ -64,9 +64,19 @@ class PianoRoll: SKScene, ObservableObject {
     let keyColorBlack: UIColor = .black
     
     func setup(_ events: [MidiEvent], _ audioFileUrl: URL, _ audioManager: AudioManager) throws {
+        pause()
+        
         self.events = events
         self.audioManager = audioManager
         self.audioManager?.stageEvents(events: events, originalAudioFileUrl: audioFileUrl)
+        
+        nextEventIdx = 0
+        playbackTime = 0
+        lastUpdateTime = 0
+        isPlaying = false
+        isAtBeginning = true
+        
+        redrawAll()
     }
     
     func play() {
@@ -93,7 +103,14 @@ class PianoRoll: SKScene, ObservableObject {
     override func didMove(to view: SKView) {
         backgroundColor = .systemBackground
         view.ignoresSiblingOrder = true
-
+        redrawAll()
+    }
+    
+    private func redrawAll() {
+        eventToNode = [:]
+        keyToNode = [:]
+        
+        removeAllChildren()
         let noteLines = drawPiano()
         drawEvents(
             noteLines: noteLines
