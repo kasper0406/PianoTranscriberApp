@@ -23,6 +23,7 @@
 		746821102C06095F00CB4015 /* PianoRollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7468210F2C06095F00CB4015 /* PianoRollView.swift */; };
 		746821122C076D8B00CB4015 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746821112C076D8B00CB4015 /* AudioManager.swift */; };
 		746821162C09258300CB4015 /* Audio2Midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 746821152C09258300CB4015 /* Audio2Midi.mlpackage */; };
+		74E3C7362C17353A007FD68C /* FileExporterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E3C7352C17353A007FD68C /* FileExporterView.swift */; };
 		F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +67,7 @@
 		7468210F2C06095F00CB4015 /* PianoRollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollView.swift; sourceTree = "<group>"; };
 		746821112C076D8B00CB4015 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		746821152C09258300CB4015 /* Audio2Midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Audio2Midi.mlpackage; sourceTree = "<group>"; };
+		74E3C7352C17353A007FD68C /* FileExporterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExporterView.swift; sourceTree = "<group>"; };
 		A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.release.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +142,7 @@
 				746820C02BF647C600CB4015 /* ModelUtils.swift */,
 				746820E02BFCE79600CB4015 /* AudioFilePicker.swift */,
 				746821082C0493F100CB4015 /* InferenceProgressView.swift */,
+				74E3C7352C17353A007FD68C /* FileExporterView.swift */,
 			);
 			path = PianoTranscriber;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 				746821092C0493F100CB4015 /* InferenceProgressView.swift in Sources */,
 				746821122C076D8B00CB4015 /* AudioManager.swift in Sources */,
 				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
+				74E3C7362C17353A007FD68C /* FileExporterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

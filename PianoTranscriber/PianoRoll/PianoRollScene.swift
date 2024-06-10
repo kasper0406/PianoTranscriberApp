@@ -184,6 +184,9 @@ class PianoRoll: SKScene, ObservableObject {
         let playbackTimeLack = 0.2 // seconds
         if abs(self.internalPlaybackTime - self.playbackTime) > playbackTimeLack {
             self.playbackTime = self.internalPlaybackTime
+            if self.internalPlaybackTime >= audioManager!.originalAudioDuration {
+                pause()
+            }
         }
         
         // Update the nextEventId
@@ -239,10 +242,16 @@ class PianoRoll: SKScene, ObservableObject {
             }
         }
         
-        // Show all events from maybeIdx until they are off-screen
+        // Walk back from maybeIdx to get the first index that is visible,
+        // then walk forwards to ensure everything is dispalyed
+        // The backward walking is necessary because a user may select an earlier playback time
         var onScreenIdx = if let idx = self.nextEventIdx {
             idx
         } else { self.events.count }
+        while onScreenIdx > 0 && isVisible(self.eventToNode[self.events[onScreenIdx - 1]]!) {
+            onScreenIdx -= 1
+        }
+        
         while onScreenIdx < self.events.count {
             let eventNode = self.eventToNode[self.events[onScreenIdx]]!
             // The node is already displayed

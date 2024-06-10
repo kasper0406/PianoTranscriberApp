@@ -17,6 +17,10 @@ enum AudioSelector: Equatable {
 class AudioManager: ObservableObject {
     let sampleRate = 44100.0
     
+    // We add a small internal delay to midi events, to attempt a
+    // best effort sync of the original audio and the midi events
+    let internalDelayInSeconds: Double = 0.1
+    
     // Audio library instances
     let engine: AVAudioEngine
     let sampler: AVAudioUnitSampler
@@ -195,7 +199,7 @@ class AudioManager: ObservableObject {
                 key: UInt32(event.note + 21),
                 velocity: UInt32(Double(127) * Double(event.velocity) / Double(10)),
                 duration: event.duration * 2)
-            track.addEvent(noteMidiEvent, at: event.attackTime * 2)
+            track.addEvent(noteMidiEvent, at: event.attackTime * 2 + internalDelayInSeconds)
         }
         sequencer.prepareToPlay()
     }
@@ -211,6 +215,7 @@ class AudioManager: ObservableObject {
     }
     
     func setPlaybackTime(_ time: TimeInterval) {
+        print("Setting audio playback time to \(time)")
         sequencer.currentPositionInSeconds = time
         
         if let audioFile = self.originalAudioFile {
@@ -219,6 +224,22 @@ class AudioManager: ObservableObject {
                                    startingFrame: playerStartFrame,
                                    frameCount: AVAudioFrameCount(audioFile.length),
                                    at: nil)
+        }
+    }
+    
+    func exportMidiFile(_ fileName: String) -> URL? {
+        do {
+            let fileManager = FileManager.default
+            let tempDir = NSTemporaryDirectory()
+            let filePath = tempDir.appending("\(fileName).mid")
+            let midiFileURL = URL(fileURLWithPath: filePath)
+
+            midiFileURL.startAccessingSecurityScopedResource()
+            try sequencer.write(to: midiFileURL, smpteResolution: 0, replaceExisting: true)
+            return midiFileURL
+        } catch {
+            print("Failed to export Midi")
+            return nil
         }
     }
 }
