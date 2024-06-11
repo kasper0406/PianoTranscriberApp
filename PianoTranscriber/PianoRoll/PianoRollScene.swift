@@ -65,6 +65,8 @@ class PianoRoll: SKScene, ObservableObject {
     let keyColorBlack: UIColor = .black
     
     func setup(_ events: [MidiEvent], _ audioFileUrl: URL, _ audioManager: AudioManager) throws {
+        print("Setting up scene")
+
         pause()
         
         self.events = events
@@ -132,7 +134,7 @@ class PianoRoll: SKScene, ObservableObject {
                 let (keyType, keyNode) = keyToNode[event.note]!
 
                 let fadeInTime = 0.01
-                let fadeOutTime = 0.1
+                let fadeOutTime = 0.01
                 let activeDuration = event.duration
                 let changeColor = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: fadeInTime)
                 let keepColor = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: activeDuration)

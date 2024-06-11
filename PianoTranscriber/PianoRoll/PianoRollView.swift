@@ -45,7 +45,9 @@ struct PianoRollView: View {
                     .frame(width: geo.size.width, height: geo.size.height)
                     .ignoresSafeArea(.container)
                     .onChange(of: events) { setupScene(size: geo.size) }
-                    .onAppear { setupScene(size: geo.size) }
+                    .onAppear {
+                        setupScene(size: geo.size)
+                    }
             }
             
             HStack {
