@@ -67,6 +67,7 @@
 		7468210F2C06095F00CB4015 /* PianoRollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollView.swift; sourceTree = "<group>"; };
 		746821112C076D8B00CB4015 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		74B617F32C19E6E00099BF75 /* PianoRollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollViewModel.swift; sourceTree = "<group>"; };
+		74B617F52C19EFBA0099BF75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		74E3C7352C17353A007FD68C /* FileExporterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExporterView.swift; sourceTree = "<group>"; };
 		74E3C7372C17558D007FD68C /* Audio2Midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Audio2Midi.mlpackage; sourceTree = "<group>"; };
 		74E3C7392C1869DC007FD68C /* PianoSamples.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = PianoSamples.sf2; sourceTree = "<group>"; };
@@ -133,6 +134,7 @@
 		7414BDBC2BF50753003E242C /* PianoTranscriber */ = {
 			isa = PBXGroup;
 			children = (
+				74B617F52C19EFBA0099BF75 /* Info.plist */,
 				7468210A2C0600DD00CB4015 /* PianoRoll */,
 				746820BB2BF61F2500CB4015 /* Resources */,
 				7414BDBD2BF50753003E242C /* PianoTranscriberApp.swift */,
@@ -558,9 +560,9 @@
 				DEVELOPMENT_TEAM = CTUVWBX944;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PianoTranscriber/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -596,9 +598,9 @@
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PianoTranscriber/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
