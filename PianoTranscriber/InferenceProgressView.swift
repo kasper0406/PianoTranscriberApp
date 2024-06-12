@@ -25,24 +25,27 @@ struct InferenceProgressView: View {
             case .notRunning:
                 Text("Not running")
             case .loadingAudio:
-                Text("Loading audio...")
+                Image("SmileNoEars")
+                    .resizable()
+                    .scaledToFit()
+                    .padding()
             case .inferring(let percentage):
-                Text("Inferring \(percentage * 100)%")
-            case .stiching:
-                Text("Stitching...")
-            case .eventizing:
-                Text("Eventizing...")
+                let maxInferImgCount = 13
+                let imgCount = Int(round(percentage * Double(maxInferImgCount)))
+                Image("CatInfer_\(imgCount)_\(maxInferImgCount)")
+                    .resizable()
+                    .scaledToFit()
+                    .padding()
+            default:
+                Image("SmileWithEars")
+                    .resizable()
+                    .scaledToFit()
+                    .padding()
             }
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(UIColor.systemBackground).opacity(0.8))
+        .background(Color(UIColor.systemBackground))
         .edgesIgnoringSafeArea(.all)
     }
-}
-
-#Preview {
-    @State var progress = InferenceProgress.loadingAudio
-
-    return InferenceProgressView(progress: progress)
 }

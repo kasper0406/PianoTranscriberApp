@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:PianoTranscriber.xcodeproj">
+      location = "group:/Volumes/git/ml/AppleApp/PianoTranscriber/PianoTranscriber.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

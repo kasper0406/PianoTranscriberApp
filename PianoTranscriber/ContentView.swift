@@ -41,13 +41,20 @@ struct ContentView: View {
 
                         PianoRollView(events: result.events, audioFileUrl: result.audioFileUrl, audioManager: audioManager)
                     } else {
-                        Text("Import a file ^^")
+                        VStack {
+                            Image("SmileWithEars")
+                                .resizable()
+                                .scaledToFit()
+                                .padding()
+                            loadFileButton()
+                                .padding()
+                        }
                     }
                 }
                 .padding()
                 .navigationBarItems(
                     leading: exportMidiButton(),
-                    trailing: loadFileButton()
+                    trailing: loadFileButtonIfFilePresent()
                 )
             }
             .blur(radius: showInferenceProgress ? 3 : 0)
@@ -99,6 +106,14 @@ struct ContentView: View {
                 // HACK: Ensure the view depends on midiExportState to make rendering of the sheet work correctly
                 // https://stackoverflow.com/questions/77169389/swiftui-bound-state-variable-not-updated-when-showing-sheet
                 .onChange(of: midiExportState) { _ in }
+            }
+        }
+    }
+    
+    private func loadFileButtonIfFilePresent() -> some View {
+        return Group {
+            if inferenceResult != nil {
+                loadFileButton()
             }
         }
     }
