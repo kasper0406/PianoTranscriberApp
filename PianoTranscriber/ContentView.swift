@@ -53,8 +53,9 @@ struct ContentView: View {
                             .resizable()
                             .scaledToFit()
                             .padding()
-                        loadFileButton()
-                            .padding()
+                        loadFileButton() {
+                            Text("Pick Piano Audio File")
+                        }.padding()
                     }
                 }
             }
@@ -116,19 +117,19 @@ struct ContentView: View {
     private func loadFileButtonIfFilePresent() -> some View {
         return Group {
             if inferenceResult != nil {
-                loadFileButton()
+                loadFileButton() {
+                    Text("New piano file")
+                    Image(systemName: "plus")
+                }
             }
         }
     }
     
-    private func loadFileButton() -> some View {
+    private func loadFileButton(@ViewBuilder label: () -> some View) -> some View {
         return Button(action: {
             pianoRollModel.pause()
             isFilePickerShowing = true
-        }) {
-            Text("New piano file")
-            Image(systemName: "plus")
-        }.fileImporter(
+        }, label: label).fileImporter(
             isPresented: $isFilePickerShowing,
             allowedContentTypes: [.audio],
             onCompletion: { pickedFile in
