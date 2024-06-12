@@ -22,6 +22,8 @@ struct ContentView: View {
     
     @State private var midiExportState = MidiExportState(isShowing: false);
     
+    @StateObject private var pianoRollModel = PianoRollViewModel()
+    
     var body: some View {
         let showInferenceProgress = switch modelManager.inferenceStatus {
         case InferenceProgress.notRunning:
@@ -31,33 +33,32 @@ struct ContentView: View {
         }
         
         ZStack {
-            NavigationView {
-                VStack {
-                    if let result = inferenceResult {
-                        let filename = result.audioFileUrl.deletingPathExtension().lastPathComponent
-                        Text("\(filename)")
-                            .font(.title)
+            VStack {
+                HStack {
+                    exportMidiButton()
+                    Spacer()
+                    loadFileButtonIfFilePresent()
+                }
+                
+                if let pianoRollView = pianoRollModel.pianoRollView {
+                    let filename = inferenceResult!.audioFileUrl.deletingPathExtension().lastPathComponent
+                    Text("\(filename)")
+                        .font(.title)
+                        .padding()
+                    
+                    pianoRollView
+                } else {
+                    VStack {
+                        Image("SmileWithEars")
+                            .resizable()
+                            .scaledToFit()
                             .padding()
-
-                        PianoRollView(events: result.events, audioFileUrl: result.audioFileUrl, audioManager: audioManager)
-                    } else {
-                        VStack {
-                            Image("SmileWithEars")
-                                .resizable()
-                                .scaledToFit()
-                                .padding()
-                            loadFileButton()
-                                .padding()
-                        }
+                        loadFileButton()
+                            .padding()
                     }
                 }
-                .padding()
-                .navigationBarItems(
-                    leading: exportMidiButton(),
-                    trailing: loadFileButtonIfFilePresent()
-                )
             }
-            .blur(radius: showInferenceProgress ? 3 : 0)
+            .padding()
             
             if showInferenceProgress {
                 InferenceProgressView(progress: modelManager.inferenceStatus)
@@ -78,6 +79,8 @@ struct ContentView: View {
         return Group {
             if inferenceResult != nil {
                 Button(action: {
+                    pianoRollModel.pause()
+                    
                     let fileName = inferenceResult!.audioFileUrl.deletingPathExtension().lastPathComponent
                     if let midiFile = audioManager.exportMidiFile(fileName) {
                         print("Setting showing to true")
@@ -120,6 +123,7 @@ struct ContentView: View {
     
     private func loadFileButton() -> some View {
         return Button(action: {
+            pianoRollModel.pause()
             isFilePickerShowing = true
         }) {
             Text("New piano file")
@@ -131,10 +135,17 @@ struct ContentView: View {
                 do {
                     let audioFileUrl = try pickedFile.get()
                     Task {
-                        inferenceResult = await modelManager.runModel(audioFileUrl)
+                        let maybeInferenceResult = await modelManager.runModel(audioFileUrl)
+                        if let inferenceResult = maybeInferenceResult {
+                            await MainActor.run {
+                                self.inferenceResult = inferenceResult
+                                self.pianoRollModel.show(inferenceResult, audioManager)
+                            }
+                        }
                     }
                 } catch {
                     inferenceResult = nil
+                    pianoRollModel.hide()
                 }
             })
     }

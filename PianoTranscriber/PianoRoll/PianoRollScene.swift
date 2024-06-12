@@ -33,7 +33,7 @@ private func findMidiEventJustAfter(_ events: [MidiEvent], _ time: Double) -> In
     return low
 }
 
-class PianoRoll: SKScene, ObservableObject {
+class PianoRollScene: SKScene, ObservableObject {
     
     private var audioManager: AudioManager?
     
@@ -100,6 +100,7 @@ class PianoRoll: SKScene, ObservableObject {
     }
     
     func pause() {
+        print("Pause called")
         audioManager?.pause()
         isPlaying = false
     }

@@ -13,16 +13,16 @@ struct PianoRollView: View {
     let events: [MidiEvent]
     let audioFileUrl: URL
     let audioManager: AudioManager
-    
-    @StateObject var scene = PianoRoll()
+    @ObservedObject var scene: PianoRollScene
     
     // TODO: Consider if I can get rid of this
     @State var audioSelect: AudioSelector = AudioSelector.midi
     
-    init(events: [MidiEvent], audioFileUrl: URL, audioManager: AudioManager) {
+    init(events: [MidiEvent], audioFileUrl: URL, audioManager: AudioManager, scene: PianoRollScene) {
         self.events = events
         self.audioFileUrl = audioFileUrl
         self.audioManager = audioManager
+        self.scene = scene
     }
 
     @State var _wasPlaying = false
@@ -107,13 +107,17 @@ struct PianoRollView: View {
         }
     }
     
+    func pause() {
+        self.scene.pause()
+    }
+    
     private func formatTime(time: TimeInterval) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
-    func setupScene(size: CGSize) {
+    private func setupScene(size: CGSize) {
         scene.size = size
         do {
             try scene.setup(events, audioFileUrl, audioManager)

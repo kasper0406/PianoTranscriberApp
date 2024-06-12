@@ -21,6 +21,7 @@
 		7468210E2C06018900CB4015 /* PianoRollScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7468210D2C06018900CB4015 /* PianoRollScene.swift */; };
 		746821102C06095F00CB4015 /* PianoRollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7468210F2C06095F00CB4015 /* PianoRollView.swift */; };
 		746821122C076D8B00CB4015 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746821112C076D8B00CB4015 /* AudioManager.swift */; };
+		74B617F42C19E6E00099BF75 /* PianoRollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B617F32C19E6E00099BF75 /* PianoRollViewModel.swift */; };
 		74E3C7362C17353A007FD68C /* FileExporterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E3C7352C17353A007FD68C /* FileExporterView.swift */; };
 		74E3C7382C17558D007FD68C /* Audio2Midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 74E3C7372C17558D007FD68C /* Audio2Midi.mlpackage */; };
 		74E3C73A2C1869EA007FD68C /* PianoSamples.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 74E3C7392C1869DC007FD68C /* PianoSamples.sf2 */; };
@@ -65,6 +66,7 @@
 		7468210D2C06018900CB4015 /* PianoRollScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollScene.swift; sourceTree = "<group>"; };
 		7468210F2C06095F00CB4015 /* PianoRollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollView.swift; sourceTree = "<group>"; };
 		746821112C076D8B00CB4015 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		74B617F32C19E6E00099BF75 /* PianoRollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollViewModel.swift; sourceTree = "<group>"; };
 		74E3C7352C17353A007FD68C /* FileExporterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExporterView.swift; sourceTree = "<group>"; };
 		74E3C7372C17558D007FD68C /* Audio2Midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Audio2Midi.mlpackage; sourceTree = "<group>"; };
 		74E3C7392C1869DC007FD68C /* PianoSamples.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = PianoSamples.sf2; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			children = (
 				7468210D2C06018900CB4015 /* PianoRollScene.swift */,
 				7468210F2C06095F00CB4015 /* PianoRollView.swift */,
+				74B617F32C19E6E00099BF75 /* PianoRollViewModel.swift */,
 				746821112C076D8B00CB4015 /* AudioManager.swift */,
 			);
 			path = PianoRoll;
@@ -386,6 +389,7 @@
 				746821122C076D8B00CB4015 /* AudioManager.swift in Sources */,
 				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
 				74E3C7362C17353A007FD68C /* FileExporterView.swift in Sources */,
+				74B617F42C19E6E00099BF75 /* PianoRollViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
