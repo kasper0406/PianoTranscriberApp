@@ -22,10 +22,11 @@
 		746821102C06095F00CB4015 /* PianoRollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7468210F2C06095F00CB4015 /* PianoRollView.swift */; };
 		746821122C076D8B00CB4015 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746821112C076D8B00CB4015 /* AudioManager.swift */; };
 		74B617F42C19E6E00099BF75 /* PianoRollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B617F32C19E6E00099BF75 /* PianoRollViewModel.swift */; };
+		74B617F62C1B0F010099BF75 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
+		74B617F72C1B0F010099BF75 /* Pods_PianoTranscriber.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		74E3C7362C17353A007FD68C /* FileExporterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E3C7352C17353A007FD68C /* FileExporterView.swift */; };
 		74E3C7382C17558D007FD68C /* Audio2Midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 74E3C7372C17558D007FD68C /* Audio2Midi.mlpackage */; };
 		74E3C73A2C1869EA007FD68C /* PianoSamples.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 74E3C7392C1869DC007FD68C /* PianoSamples.sf2 */; };
-		F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,20 @@
 			remoteInfo = PianoTranscriber;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		74B617F82C1B0F010099BF75 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				74B617F72C1B0F010099BF75 /* Pods_PianoTranscriber.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		03134EB649542C1BDCFAB008 /* Pods-PianoTranscriber.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.debug.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.debug.xcconfig"; sourceTree = "<group>"; };
@@ -79,7 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F2BDF9A989D883498B9A5687 /* Pods_PianoTranscriber.framework in Frameworks */,
+				74B617F62C1B0F010099BF75 /* Pods_PianoTranscriber.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +231,7 @@
 				7414BDB72BF50753003E242C /* Frameworks */,
 				7414BDB82BF50753003E242C /* Resources */,
 				5F02BCA7DCE7A3DA7A539476 /* [CP] Embed Pods Frameworks */,
+				74B617F82C1B0F010099BF75 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -561,6 +577,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PianoTranscriber/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Piano Transcriber";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
@@ -599,6 +617,8 @@
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PianoTranscriber/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Piano Transcriber";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
