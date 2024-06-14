@@ -4,3 +4,5 @@
 *.mlmodel filter=lfs diff=lfs merge=lfs -text
 *.CoreML filter=lfs diff=lfs merge=lfs -text
 *.sf2 filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
