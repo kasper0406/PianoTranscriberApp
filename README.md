@@ -4,11 +4,9 @@ Piano Transcriber is an iOS app that given an audio file with piano music will g
 The app looks like this:
 
 <p align="center">
-  <video width="30%">
-    <source src="screenshots/video.mp4" type="video/mp4">
-  </video>
-  <img src="screenshots/home.png" alt="Screenshot 1" width="30%" />
-  <img src="screenshots/playing.png" alt="Screenshot 2" width="30%" />
+  <img src="screenshots/demo.gif" alt="Demo" width="30%" />
+  <img src="screenshots/home.png" alt="Home" width="30%" />
+  <img src="screenshots/playing.png" alt="Playing" width="30%" />
 </p>
 
 Piano Transcriber is fully open source, and all processing is happening on the device itself, and nothing is being sent to a remote server.
