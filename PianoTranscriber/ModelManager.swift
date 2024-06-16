@@ -50,7 +50,7 @@ class ModelManager: ObservableObject {
     private let channels = 2
     private let sampleRate = 8000.0 // Hz
     private let windowDuration = 2.0 // seconds
-    private let windowOverlap = 0.25 // seconds
+    private let windowOverlap = 0.20 // seconds
     
     private let audioEngine = AVAudioEngine()
     
@@ -84,7 +84,7 @@ class ModelManager: ObservableObject {
             await MainActor.run {
                 self.inferenceStatus = InferenceProgress.inferring(0.0)
             }
-            let batchSize = 4 // * 2 seconds
+            let batchSize = 10 // * 2 seconds
             var outputProbs: [MLMultiArray] = []
             outputProbs.reserveCapacity(inputs.count)
             for chunk in inputs.chunks(ofCount: batchSize) {
