@@ -51,12 +51,12 @@ class PianoRollScene: SKScene, ObservableObject {
     let pianoBorder2Width: Double = 3.0
     private lazy var eventStartPosition: Double = pianoWidth + pianoBorder1Width + pianoBorder2Width
     
-    let numKeys: Int = 88
-    let numWhiteKeys: Int = 52
+    var keyRange: ClosedRange<Int> = 0...87
     
     private var internalPlaybackTime: Double = 0
     private var lastUpdateTime: TimeInterval = 0
     private var eventNode: SKNode? = nil
+    private var keysNode: SKNode? = nil
     
     let timeScaleFactor = 400.0 // (x units / second)
     
@@ -116,10 +116,13 @@ class PianoRollScene: SKScene, ObservableObject {
         keyToNode = [:]
         
         removeAllChildren()
+        
+        self.keyRange = computeKeyRangeFromEvents()
         let noteLines = drawPiano()
         drawEvents(
             noteLines: noteLines
         )
+        // scalePianoAndEvents()
     }
     
     override func update(_ sceneTime: TimeInterval) {
@@ -193,7 +196,7 @@ class PianoRollScene: SKScene, ObservableObject {
         }
         
         // Update the nextEventId
-        while self.nextEventIdx != nil &&
+        while self.nextEventIdx != nil && !self.events.isEmpty &&
                 self.events[nextEventIdx!].attackTime < time {
             self.nextEventIdx! += 1
             if self.nextEventIdx! >= self.events.count {
@@ -203,6 +206,12 @@ class PianoRollScene: SKScene, ObservableObject {
         
         updateEventVisibility()
     }
+
+    func noteNameFromMIDINote(_ midiNote: Int) -> String {
+        let noteNames = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
+        let noteIndex = midiNote % 12
+        return noteNames[noteIndex] + " (\(midiNote))"
+    }
     
     private func drawEvents(noteLines: [(CGFloat, CGFloat)]) {
         self.eventNode = SKNode()
@@ -210,7 +219,8 @@ class PianoRollScene: SKScene, ObservableObject {
         addChild(eventNode!)
 
         for midiEvent in events {
-            let (startY, endY) = noteLines[midiEvent.note]
+            // In principle the max is not needed, but to guard against crashes we add it
+            let (startY, endY) = noteLines[midiEvent.note - self.keyRange.lowerBound]
             let height = CGFloat(endY - startY)
             
             let startX = midiEvent.attackTime * timeScaleFactor
@@ -221,6 +231,27 @@ class PianoRollScene: SKScene, ObservableObject {
             event.position = CGPoint(x: Double(startX) + width / 2, y: (startY + endY) / 2)
             event.zPosition = 1.0
             eventToNode.updateValue(event, forKey: midiEvent)
+
+            // --- Add Note Name Label ---
+            let noteName = noteNameFromMIDINote(midiEvent.note) // Helper function (see below)
+            let labelNode = SKLabelNode(text: noteName)
+
+            //Crucial: Font Size and Scaling.  We need to do this *before* positioning.
+            labelNode.fontSize = 12 // Adjust as needed.  Start small.
+            labelNode.fontName = "HelveticaNeue-Bold" // Or your preferred font
+            labelNode.fontColor = .white
+
+            //Scale the label so it fit it, accounting for the cases when there is not enough space available.
+            let scaleFactor = event.size.height / labelNode.frame.size.height
+            labelNode.xScale = scaleFactor
+            labelNode.yScale = scaleFactor
+
+            labelNode.position = CGPoint(x: 0, y: 0)
+            labelNode.zPosition = 1.1 // Ensure label is above the event rectangle
+            labelNode.verticalAlignmentMode = .center
+            labelNode.horizontalAlignmentMode = .left
+
+            event.addChild(labelNode)
         }
         
         updateEventVisibility()
@@ -277,16 +308,17 @@ class PianoRollScene: SKScene, ObservableObject {
     
     private func drawPiano() -> [(CGFloat, CGFloat)] {
         let keyMargin = 0.5
+        let numWhiteKeys = countWhiteKeys(self.keyRange)
         let whiteKeyHeight = (self.frame.height / CGFloat(numWhiteKeys)) - keyMargin
         let blackKeyHeight = whiteKeyHeight * 0.496
-        
+
         var noteLines: [(CGFloat, CGFloat)] = [] // Start to end of key
-        noteLines.reserveCapacity(numKeys)
-        
+        noteLines.reserveCapacity(self.keyRange.count)
+
         let spacing1 = whiteKeyHeight * 0.63
         let spacing2 = whiteKeyHeight * 0.72
         let spacing3 = whiteKeyHeight * 0.64
-        
+
         let keyStartSpacing = [
             0.0,
             spacing1,
@@ -304,15 +336,13 @@ class PianoRollScene: SKScene, ObservableObject {
         ]
         
         // We start on an a node for key 0. We do some offset magic to make this work out
-        let keyOffset = 9
+        let keyOffset = 9  // (9 + self.keyRange.lowerBound) % 12
         var yPosition = self.frame.maxY + keyStartSpacing[keyOffset]
 
-        for keyId in 0..<numKeys {
+        self.keysNode = SKNode()
+        for keyId in self.keyRange {
             let keyIdx = (keyId + keyOffset) % 12
-            let keyType = switch keyIdx % 12 {
-            case 0, 2, 4, 5, 7, 9, 11: PianoKeyType.white
-            default: PianoKeyType.black
-            }
+            let keyType = getKeyType(midiKey: keyId)
             let keyColor = switch keyType {
             case .black: keyColorBlack
             case .white: keyColorWhite
@@ -336,14 +366,15 @@ class PianoRollScene: SKScene, ObservableObject {
             let keyEnd = keyStart - keyHeight
             noteLines.append((keyEnd, keyStart)) // Direction reversed because we draw in reverse
             key.position = CGPoint(x: self.frame.minX + pianoBorder1Width + pianoWidth - keyWidth / 2, y: keyStart - keyHeight / 2)
-            addChild(key)
+            self.keysNode!.addChild(key)
             keyToNode.updateValue((keyType, key), forKey: keyId)
             
             if keyIdx % 12 == 11 {
                 yPosition -= keyStartSpacing[12]
             }
         }
-        
+        addChild(self.keysNode!)
+
         // Draw piano borders
         let borderColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
         let border1 = SKSpriteNode(color: borderColor, size: CGSize(width: pianoBorder1Width, height: self.frame.height))
@@ -363,5 +394,44 @@ class PianoRollScene: SKScene, ObservableObject {
         addChild(pianoBackground)
         
         return noteLines
+    }
+    
+    // Scale the piano and key nodes to match the range of the keys in the music
+    private func computeKeyRangeFromEvents() -> ClosedRange<Int> {
+        var keyRange = 36...59
+        for event in self.events {
+            // Round the key range to only white keys to make the height and scalign line up
+            let keyType = getKeyType(midiKey: event.note)
+            let eventLowerBound = switch keyType {
+            case .black: event.note - 1
+            case .white: event.note
+            }
+            let eventUpperBound = switch keyType {
+            case .black: event.note + 1
+            case .white: event.note
+            }
+            
+            keyRange = min(keyRange.lowerBound, eventLowerBound)...max(keyRange.upperBound, eventUpperBound)
+        }
+        // Extend they keyRange by a few keys
+        keyRange = max(0, keyRange.lowerBound - 2)...min(88, keyRange.upperBound + 2)
+        return keyRange
+    }
+    
+    private func countWhiteKeys(_ range: ClosedRange<Int>) -> Int {
+        var count = 0
+        for i in range {
+            if getKeyType(midiKey: i) == PianoKeyType.white {
+                count += 1
+            }
+        }
+        return count
+    }
+    
+    private func getKeyType(midiKey key: Int) -> PianoKeyType {
+        switch key % 12 {
+        case 0, 2, 3, 5, 7, 8, 10: PianoKeyType.white
+        default: PianoKeyType.black
+        }
     }
 }

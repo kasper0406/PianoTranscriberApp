@@ -14,6 +14,7 @@
 		7414BDCF2BF50755003E242C /* PianoTranscriberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7414BDCE2BF50755003E242C /* PianoTranscriberTests.swift */; };
 		7414BDD92BF50755003E242C /* PianoTranscriberUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7414BDD82BF50755003E242C /* PianoTranscriberUITests.swift */; };
 		7414BDDB2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7414BDDA2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift */; };
+		7426E9092D64C82000BDEE26 /* Audio2Midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 7426E9082D64C82000BDEE26 /* Audio2Midi.mlpackage */; };
 		746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820B72BF5097D00CB4015 /* ModelManager.swift */; };
 		746820C12BF647C600CB4015 /* ModelUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820C02BF647C600CB4015 /* ModelUtils.swift */; };
 		746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746820E02BFCE79600CB4015 /* AudioFilePicker.swift */; };
@@ -25,7 +26,6 @@
 		74B617F62C1B0F010099BF75 /* Pods_PianoTranscriber.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; };
 		74B617F72C1B0F010099BF75 /* Pods_PianoTranscriber.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6D8CDC0E0C848156F36733F1 /* Pods_PianoTranscriber.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		74E3C7362C17353A007FD68C /* FileExporterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E3C7352C17353A007FD68C /* FileExporterView.swift */; };
-		74E3C7382C17558D007FD68C /* Audio2Midi.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 74E3C7372C17558D007FD68C /* Audio2Midi.mlpackage */; };
 		74E3C73A2C1869EA007FD68C /* PianoSamples.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 74E3C7392C1869DC007FD68C /* PianoSamples.sf2 */; };
 /* End PBXBuildFile section */
 
@@ -73,6 +73,7 @@
 		7414BDD42BF50755003E242C /* PianoTranscriberUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PianoTranscriberUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7414BDD82BF50755003E242C /* PianoTranscriberUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoTranscriberUITests.swift; sourceTree = "<group>"; };
 		7414BDDA2BF50755003E242C /* PianoTranscriberUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoTranscriberUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		7426E9082D64C82000BDEE26 /* Audio2Midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Audio2Midi.mlpackage; sourceTree = "<group>"; };
 		746820B72BF5097D00CB4015 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		746820C02BF647C600CB4015 /* ModelUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelUtils.swift; sourceTree = "<group>"; };
 		746820D92BF67DD800CB4015 /* PianoTranscriber-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PianoTranscriber-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -84,7 +85,6 @@
 		74B617F32C19E6E00099BF75 /* PianoRollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollViewModel.swift; sourceTree = "<group>"; };
 		74B617F52C19EFBA0099BF75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		74E3C7352C17353A007FD68C /* FileExporterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExporterView.swift; sourceTree = "<group>"; };
-		74E3C7372C17558D007FD68C /* Audio2Midi.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Audio2Midi.mlpackage; sourceTree = "<group>"; };
 		74E3C7392C1869DC007FD68C /* PianoSamples.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = PianoSamples.sf2; sourceTree = "<group>"; };
 		A01138D705FC6425CBB9A2B5 /* Pods-PianoTranscriber.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PianoTranscriber.release.xcconfig"; path = "Target Support Files/Pods-PianoTranscriber/Pods-PianoTranscriber.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -194,7 +194,7 @@
 		746820BB2BF61F2500CB4015 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				74E3C7372C17558D007FD68C /* Audio2Midi.mlpackage */,
+				7426E9082D64C82000BDEE26 /* Audio2Midi.mlpackage */,
 				74E3C7392C1869DC007FD68C /* PianoSamples.sf2 */,
 			);
 			path = Resources;
@@ -403,10 +403,10 @@
 				746820E12BFCE79600CB4015 /* AudioFilePicker.swift in Sources */,
 				746821102C06095F00CB4015 /* PianoRollView.swift in Sources */,
 				746821092C0493F100CB4015 /* InferenceProgressView.swift in Sources */,
-				74E3C7382C17558D007FD68C /* Audio2Midi.mlpackage in Sources */,
 				746821122C076D8B00CB4015 /* AudioManager.swift in Sources */,
 				746820B82BF5097D00CB4015 /* ModelManager.swift in Sources */,
 				74E3C7362C17353A007FD68C /* FileExporterView.swift in Sources */,
+				7426E9092D64C82000BDEE26 /* Audio2Midi.mlpackage in Sources */,
 				74B617F42C19E6E00099BF75 /* PianoRollViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -583,6 +583,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -623,6 +624,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

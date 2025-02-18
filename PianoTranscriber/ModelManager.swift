@@ -48,9 +48,9 @@ class ModelManager: ObservableObject {
 
     // TODO(knielsen): Export these constants in the CoreML model metadata
     private let channels = 2
-    private let sampleRate = 8000.0 // Hz
-    private let windowDuration = 2.0 // seconds
-    private let windowOverlap = 0.20 // seconds
+    private let sampleRate = 16000.0 // Hz
+    private let windowDuration = 5.0 // seconds
+    private let windowOverlap = 0.50 // seconds
     
     private let audioEngine = AVAudioEngine()
     
@@ -84,7 +84,7 @@ class ModelManager: ObservableObject {
             await MainActor.run {
                 self.inferenceStatus = InferenceProgress.inferring(0.0)
             }
-            let batchSize = 10 // * 2 seconds
+            let batchSize = 2 // * 5 seconds
             var outputProbs: [MLMultiArray] = []
             outputProbs.reserveCapacity(inputs.count)
             for chunk in inputs.chunks(ofCount: batchSize) {
@@ -126,17 +126,17 @@ class ModelManager: ObservableObject {
         var windows: [Audio2MidiInput] = []
         for i in 0 ..< numWindows {
             let sampleInputs = Audio2MidiInput(
-                data: try MLMultiArray(shape: [2, samplesInWindow] as [NSNumber], dataType: .float16)
+                samples: try MLMultiArray(shape: [2, samplesInWindow] as [NSNumber], dataType: .float16)
             )
             
             let windowStart = i * (samplesInWindow - overlap)
             let windowEnd = windowStart + samplesInWindow
             for (windowIdx, sampleIdx) in zip(0...samplesInWindow, windowStart..<windowEnd) {
                 let leftSample = if sampleIdx < leftSamples.count { leftSamples[sampleIdx] } else { Float(0.0) }
-                sampleInputs.data[[0, windowIdx] as [NSNumber]] = NSNumber(value: leftSample)
+                sampleInputs.samples[[0, windowIdx] as [NSNumber]] = NSNumber(value: leftSample * 20)
 
                 let rightSample = if sampleIdx < rightSamples.count { rightSamples[sampleIdx] } else { Float(0.0) }
-                sampleInputs.data[[1, windowIdx] as [NSNumber]] = NSNumber(value: rightSample)
+                sampleInputs.samples[[1, windowIdx] as [NSNumber]] = NSNumber(value: rightSample * 20)
             }
             windows.append(sampleInputs)
         }
