@@ -43,7 +43,7 @@ struct ContentView: View {
                 if let pianoRollView = pianoRollModel.pianoRollView {
                     let filename = inferenceResult!.audioFileUrl.deletingPathExtension().lastPathComponent
                     Text("\(filename)")
-                        .font(.title)
+                        .font(.caption)
                         .padding()
                     
                     pianoRollView

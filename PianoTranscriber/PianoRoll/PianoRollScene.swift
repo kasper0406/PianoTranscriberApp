@@ -33,6 +33,21 @@ private func findMidiEventJustAfter(_ events: [MidiEvent], _ time: Double) -> In
     return low
 }
 
+func createRoundedRectImage(size: CGSize, cornerRadius: CGFloat) -> UIImage {
+    UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+
+    let rect = CGRect(origin: .zero, size: size)
+    let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+
+    UIColor.white.setFill()
+    path.fill()
+
+    let image = UIGraphicsGetImageFromCurrentImageContext()!
+    UIGraphicsEndImageContext()
+
+    return image
+}
+
 class PianoRollScene: SKScene, ObservableObject {
     
     private var audioManager: AudioManager?
@@ -60,7 +75,8 @@ class PianoRollScene: SKScene, ObservableObject {
     
     let timeScaleFactor = 400.0 // (x units / second)
     
-    let eventColor: UIColor = UIColor(red: 0.2, green: 0.2, blue: 1.0, alpha: 1.0)
+    let eventColor: UIColor = UIColor.systemBlue // UIColor(red: 0.6, green: 0.6, blue: 1.0, alpha: 1.0)
+    let eventActivationColor: UIColor = UIColor.systemRed // UIColor(red: 1.0, green: 0.6, blue: 0.6, alpha: 1.0)
     let keyColorWhite: UIColor = UIColor(red: 0.99, green: 0.96, blue: 0.94, alpha: 1.0)
     let keyColorBlack: UIColor = .black
     
@@ -140,8 +156,8 @@ class PianoRollScene: SKScene, ObservableObject {
                 let fadeInTime = 0.01
                 let fadeOutTime = 0.01
                 let activeDuration = event.duration
-                let changeColor = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: fadeInTime)
-                let keepColor = SKAction.colorize(with: .red, colorBlendFactor: 1.0, duration: activeDuration)
+                let changeColor = SKAction.colorize(with: eventActivationColor, colorBlendFactor: 1.0, duration: fadeInTime)
+                let keepColor = SKAction.colorize(with: eventActivationColor, colorBlendFactor: 1.0, duration: activeDuration)
                 
                 let revertColorEvent = SKAction.colorize(with: eventColor, colorBlendFactor: 1.0, duration: fadeOutTime)
                 let sequenceEvent = SKAction.sequence([changeColor, keepColor, revertColorEvent])
@@ -210,7 +226,7 @@ class PianoRollScene: SKScene, ObservableObject {
     func noteNameFromMIDINote(_ midiNote: Int) -> String {
         let noteNames = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
         let noteIndex = midiNote % 12
-        return noteNames[noteIndex] + " (\(midiNote))"
+        return noteNames[noteIndex] // + " (\(midiNote))"
     }
     
     private func drawEvents(noteLines: [(CGFloat, CGFloat)]) {
@@ -226,8 +242,14 @@ class PianoRollScene: SKScene, ObservableObject {
             let startX = midiEvent.attackTime * timeScaleFactor
             let endX = (midiEvent.attackTime + midiEvent.duration) * timeScaleFactor
             let width = CGFloat(endX - startX)
+
+            let cornerRadius: CGFloat = height / 4
+            let roundedImage = createRoundedRectImage(size: CGSize(width: width, height: height), cornerRadius: cornerRadius)
+            let roundedTexture = SKTexture(image: roundedImage)
+            let event = SKSpriteNode(texture: roundedTexture)
+            event.colorBlendFactor = 1.0
+            event.color = eventColor
             
-            let event = SKSpriteNode(color: eventColor, size: CGSize(width: width, height: height))
             event.position = CGPoint(x: Double(startX) + width / 2, y: (startY + endY) / 2)
             event.zPosition = 1.0
             eventToNode.updateValue(event, forKey: midiEvent)
@@ -309,15 +331,16 @@ class PianoRollScene: SKScene, ObservableObject {
     private func drawPiano() -> [(CGFloat, CGFloat)] {
         let keyMargin = 0.5
         let numWhiteKeys = countWhiteKeys(self.keyRange)
+        // print("Num white keys: \(numWhiteKeys)")
         let whiteKeyHeight = (self.frame.height / CGFloat(numWhiteKeys)) - keyMargin
-        let blackKeyHeight = whiteKeyHeight * 0.496
+        let blackKeyHeight = whiteKeyHeight * 0.58
 
         var noteLines: [(CGFloat, CGFloat)] = [] // Start to end of key
         noteLines.reserveCapacity(self.keyRange.count)
 
         let spacing1 = whiteKeyHeight * 0.63
-        let spacing2 = whiteKeyHeight * 0.72
-        let spacing3 = whiteKeyHeight * 0.64
+        let spacing2 = whiteKeyHeight * 0.64
+        let spacing3 = whiteKeyHeight * 0.52
 
         let keyStartSpacing = [
             0.0,
@@ -336,13 +359,14 @@ class PianoRollScene: SKScene, ObservableObject {
         ]
         
         // We start on an a node for key 0. We do some offset magic to make this work out
-        let keyOffset = 9  // (9 + self.keyRange.lowerBound) % 12
-        var yPosition = self.frame.maxY + keyStartSpacing[keyOffset]
+        let keyOffset = 9
+        var yPosition = self.frame.maxY + keyStartSpacing[(keyOffset + self.keyRange.lowerBound) % 12]
 
         self.keysNode = SKNode()
         for keyId in self.keyRange {
             let keyIdx = (keyId + keyOffset) % 12
             let keyType = getKeyType(midiKey: keyId)
+            // print("Drawing keyId: \(keyId), keyIdx: \(keyIdx), type: \(keyType)")
             let keyColor = switch keyType {
             case .black: keyColorBlack
             case .white: keyColorWhite
@@ -368,6 +392,14 @@ class PianoRollScene: SKScene, ObservableObject {
             key.position = CGPoint(x: self.frame.minX + pianoBorder1Width + pianoWidth - keyWidth / 2, y: keyStart - keyHeight / 2)
             self.keysNode!.addChild(key)
             keyToNode.updateValue((keyType, key), forKey: keyId)
+            
+            if keyIdx == 0 {
+                // Draw a line indicating a new octave starts
+                let octaveLine = SKSpriteNode(color: UIColor.systemGray5, size: CGSize(width: frame.width, height: 1.0))
+                octaveLine.position = CGPoint(x: self.frame.maxX - frame.width / 2, y: yPosition)
+                octaveLine.zPosition = 0.8
+                addChild(octaveLine)
+            }
             
             if keyIdx % 12 == 11 {
                 yPosition -= keyStartSpacing[12]
@@ -398,7 +430,7 @@ class PianoRollScene: SKScene, ObservableObject {
     
     // Scale the piano and key nodes to match the range of the keys in the music
     private func computeKeyRangeFromEvents() -> ClosedRange<Int> {
-        var keyRange = 36...59
+        var keyRange = 25...71
         for event in self.events {
             // Round the key range to only white keys to make the height and scalign line up
             let keyType = getKeyType(midiKey: event.note)
@@ -413,8 +445,7 @@ class PianoRollScene: SKScene, ObservableObject {
             
             keyRange = min(keyRange.lowerBound, eventLowerBound)...max(keyRange.upperBound, eventUpperBound)
         }
-        // Extend they keyRange by a few keys
-        keyRange = max(0, keyRange.lowerBound - 2)...min(88, keyRange.upperBound + 2)
+        print("Computed key range: \(keyRange)")
         return keyRange
     }
     
