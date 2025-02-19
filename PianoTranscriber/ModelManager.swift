@@ -13,6 +13,8 @@ import Algorithms
 enum Audio2MidiModelErrors: Error {
     case audioFormatTooManyChannels
     case resamplingFailed
+    case failedToObtainPermission
+    case imbalancedNumberOfSamples
 }
 
 struct InferenceResult {
@@ -145,7 +147,9 @@ class ModelManager: ObservableObject {
     }
     
     private func extractSamples(_ audioFileUrl: URL) throws -> ([Float], [Float]) {
-        audioFileUrl.startAccessingSecurityScopedResource()
+        if !audioFileUrl.startAccessingSecurityScopedResource() {
+            throw Audio2MidiModelErrors.failedToObtainPermission
+        }
         let audioFile = try AVAudioFile(forReading: audioFileUrl)
         let audioFormat = audioFile.processingFormat
         if audioFormat.channelCount > 2 {
@@ -162,7 +166,7 @@ class ModelManager: ObservableObject {
         try audioFile.read(into: inputBuffer)
 
         let outputBuffer = AVAudioPCMBuffer(pcmFormat: converter.outputFormat, frameCapacity: inputBuffer.frameLength)!
-        var errorPtr: NSErrorPointer = nil;
+        let errorPtr: NSErrorPointer = nil;
         var dataProvided = false
         converter.convert(to: outputBuffer, error: errorPtr, withInputFrom: { inNumPackets, outStatus in
             if dataProvided {
@@ -178,7 +182,6 @@ class ModelManager: ObservableObject {
             throw Audio2MidiModelErrors.resamplingFailed
         }
 
-        let outputFrames = outputBuffer.frameLength
         let leftChannel = Array(UnsafeBufferPointer(
             start: outputBuffer.floatChannelData?.advanced(by: 0).pointee,
             count: Int(outputBuffer.frameLength))
@@ -193,8 +196,34 @@ class ModelManager: ObservableObject {
         }
         
         audioFileUrl.stopAccessingSecurityScopedResource()
-        return (leftChannel, rightChannel)
+        return try normalizeSamples(left: leftChannel, right: rightChannel)
     }
-    
+
+    private func normalizeSamples(left: [Float], right: [Float]) throws -> ([Float], [Float]) {
+        let totalElements = Double(left.count + right.count)
+
+        // guard to avoid crash if left and right have different number of elements
+        guard left.count == right.count else {
+            throw Audio2MidiModelErrors.imbalancedNumberOfSamples
+        }
+
+        // Calculate the variance.  Use zip to iterate over both arrays simultaneously.
+        let variance = zip(left, right).reduce(0.0) { (acc, pair) in
+            let (leftVal, rightVal) = pair
+            return acc + (pow(Double(leftVal), 2) + pow(Double(rightVal), 2)) / totalElements
+        }
+        
+        guard variance > 0.01 else {
+            return (left, right)
+        }
+        let adjustment = sqrt(1.0 / variance) / 4.0
+        print("Adjusting samples with a factor of \(adjustment)")
+
+        // Apply the adjustment to each sample.
+        let normalizedLeft = left.map { Float(Double($0) * adjustment) }
+        let normalizedRight = right.map { Float(Double($0) * adjustment) }
+
+        return (normalizedLeft, normalizedRight)
+    }
 }
 

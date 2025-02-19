@@ -241,7 +241,7 @@ class PianoRollScene: SKScene, ObservableObject {
             
             let startX = midiEvent.attackTime * timeScaleFactor
             let endX = (midiEvent.attackTime + midiEvent.duration) * timeScaleFactor
-            let width = CGFloat(endX - startX)
+            let width = min(1000.0, CGFloat(endX - startX))
 
             let cornerRadius: CGFloat = height / 4
             let roundedImage = createRoundedRectImage(size: CGSize(width: width, height: height), cornerRadius: cornerRadius)
